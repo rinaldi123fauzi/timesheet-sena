@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: approvals
+#
+#  id            :bigint           not null, primary key
+#  loan_id       :bigint
+#  approve_by    :string
+#  approve_level :integer
+#  date          :datetime
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
+one:
+  loan: one
+  approve_by: MyString
+  approve_level: 1
+  date: 2023-03-21 16:58:05
+
+two:
+  loan: two
+  approve_by: MyString
+  approve_level: 1
+  date: 2023-03-21 16:58:05

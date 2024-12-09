@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: departments
+#
+#  id              :bigint           not null, primary key
+#  division_id     :bigint           not null
+#  nama_department :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
+one:
+  division: one
+  nama_department: MyString
+
+two:
+  division: two
+  nama_department: MyString

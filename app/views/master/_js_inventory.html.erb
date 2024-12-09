@@ -1,0 +1,215 @@
+<script>
+    $(document).on('click', '.tambah-inventory', function(){
+      const id = 1;
+      $('#kode').val('');
+      $('#item').empty();
+      $('#merek').val('');
+      $('#tahun_perolehan').val('');
+      $('#harga_perolehan_real').val('');
+      $('#nilai_residu_real').val('');
+      $('#harga_perolehan').val('');
+      $('#nilai_residu').val('');
+      $('#masa_guna').val('');
+      $('#lama_pakai').val('');
+      $('#kondisi').val('');
+      $('#lokasi').val('');
+      $('.modal-title').text('Tambah Data');
+      $.ajax({
+        url: "<%= getAllItem_helper_json_index_path %>",
+        method: 'GET',
+        data : {
+                id:id
+                },
+        success: function(data)
+        {
+          viewHtml = '';
+          for (let i = 0; i < data[0]['item'].length; i++) {
+            const element = data[0]['item'][i];
+            viewHtml += '<option value='+element['id']+'>'+element['nama_item']+'</option>';
+          }
+          $('#item').html(viewHtml);
+
+          viewHtmlKondisi = '';
+          viewHtmlKondisi += '<option value="baik">Baik</option>';
+          viewHtmlKondisi += '<option value="diperbaiki">Diperbaiki</option>';
+          viewHtmlKondisi += '<option value="diganti">Diganti</option>';
+          $('#kondisi').append(viewHtmlKondisi);
+
+          viewHtmlLokasi = '';
+          viewHtmlLokasi += '<option value="kantor">Kantor</option>';
+          viewHtmlLokasi += '<option value="dipinjam">Dipinjam</option>';
+          $('#lokasi').append(viewHtmlLokasi);
+        }
+      });
+    });
+
+    $(document).on('click','#ubahInventory', function(e){
+      e.preventDefault();
+      $('#kode').val('');
+      $('#item').empty();
+      $('#merek').val('');
+      $('#tahun_perolehan').val('');
+      $('#harga_perolehan_real').val('');
+      $('#nilai_residu_real').val('');
+      $('#harga_perolehan').val('');
+      $('#nilai_residu').val('');
+      $('#masa_guna').val('');
+      $('#lama_pakai').val('');
+      $('#kondisi').empty();
+      $('#lokasi').empty();
+      var id = $(this).data('id');
+      $('#id_inventory').val(id);
+      $('.modal-title').text('Ubah Data');
+      $.ajax({
+        url: "<%= getDetailInventory_helper_json_index_path %>",
+        method: 'GET',
+        data : {
+                id:id
+                },
+        success: function(data)
+        {
+          $('#kode').val(data[0]['kode']);
+          viewHtmlItem = '';
+          for (let i = 0; i < data[0]['items'].length; i++) {
+            const element = data[0]['items'][i];
+            if (data[0]['item'] == element['id']) {
+              viewHtmlItem += '<option value="'+element['id']+'" selected>'+element['nama_item']+'</option>'
+            }else{
+              viewHtmlItem += '<option value="'+element['id']+'">'+element['nama_item']+'</option>'
+            }
+          }
+          $('#item').append(viewHtmlItem);
+          $('#merek').val(data[0]['merek']);
+          $('#tahun_perolehan').val(data[0]['tahun_perolehan']);
+          $('#harga_perolehan_real').val(data[0]['harga_perolehan']);
+          $('#harga_perolehan').val(rupiah_formater(data[0]['harga_perolehan'].toString(), 'Rp.'));
+          $('#nilai_residu').val(rupiah_formater(data[0]['nilai_residu'].toString(), 'Rp.'));
+          $('#nilai_residu_real').val(data[0]['nilai_residu']);
+          $('#masa_guna').val(data[0]['masa_guna']);
+          $('#lama_pakai').val(data[0]['lama_pakai']);
+          
+          viewHtmlKondisi = '';
+          if (data[0]['kondisi'] == "baik") {
+            viewHtmlKondisi += '<option value="baik" selected>Baik</option>';
+            viewHtmlKondisi += '<option value="diperbaiki">Diperbaiki</option>';
+            viewHtmlKondisi += '<option value="diganti">Diganti</option>';
+          }else if(data[0]['kondisi'] == "diperbaiki"){
+            viewHtmlKondisi += '<option value="baik">Baik</option>';
+            viewHtmlKondisi += '<option value="diperbaiki" selected>Diperbaiki</option>';
+            viewHtmlKondisi += '<option value="diganti">Diganti</option>';
+          }else if(data[0]['kondisi'] == "diperbaiki"){
+            viewHtmlKondisi += '<option value="baik">Baik</option>';
+            viewHtmlKondisi += '<option value="diperbaiki">Diperbaiki</option>';
+            viewHtmlKondisi += '<option value="diganti" selected>Diganti</option>';
+          }
+          $('#kondisi').append(viewHtmlKondisi);
+
+          viewHtmlLokasi = '';
+          if (data[0]['lokasi'] == "kantor") {
+            viewHtmlLokasi += '<option value="kantor" selected>Kantor</option>';
+            viewHtmlLokasi += '<option value="dipinjam">Dipinjam</option>';
+          }else if(data[0]['lokasi'] == "dipinjam"){
+            viewHtmlLokasi += '<option value="kantor">Kantor</option>';
+            viewHtmlLokasi += '<option value="dipinjam" selected>Dipinjam</option>';
+          }
+          $('#lokasi').append(viewHtmlLokasi);
+          // $('#lokasi').val(data[0]['lokasi']);
+        }
+      });
+    });
+
+    $(document).on('click', '#lihatInventory', function(){
+      $('#viewkode').val('');
+      $('#viewitem').val('');
+      $('#viewmerek').val('');
+      $('#viewtahun_perolehan').val('');
+      $('#viewharga_perolehan').val('');
+      $('#viewnilai_residu').val('');
+      $('#viewmasa_guna').val('');
+      $('#viewlama_pakai').val('');
+      $('#viewkondisi').val('');
+      $('#viewlokasi').val('');
+      var id = $(this).data('id');
+      $('.modal-title').text('Detail');
+      $.ajax({
+        url: "<%= getDetailInventory_helper_json_index_path %>",
+        method: 'GET',
+        data : {
+                id:id
+                },
+        success: function(data)
+        {
+          var harga_perolehan = rupiah_formater(data[0]['harga_perolehan'].toString(), 'Rp.');
+          var nilai_residu = rupiah_formater(data[0]['nilai_residu'].toString(), 'Rp.');
+          $('#viewkode').val(data[0]['kode']);
+          $('#viewitem').val(data[0]['nama_item']);
+          $('#viewmerek').val(data[0]['merek']);
+          $('#viewtahun_perolehan').val(data[0]['tahun_perolehan']);
+          $('#viewharga_perolehan').val(harga_perolehan);
+          $('#viewnilai_residu').val(nilai_residu);
+          $('#viewmasa_guna').val(data[0]['masa_guna']);
+          $('#viewlama_pakai').val(data[0]['lama_pakai']);
+          $('#viewkondisi').val(data[0]['kondisi']);
+          $('#viewlokasi').val(data[0]['lokasi']);
+        }
+      });
+    });
+
+    const btn_inventory = document.querySelector('#simpanInventory');
+    const form_inventory = document.querySelector('form');
+
+    btn_inventory.addEventListener('click', (e) => {
+      e.preventDefault();
+      const formData = new FormData(form_inventory);
+      var id_inventory = $('#id_inventory').val();
+      $('#simpanInventory').text('Loading...');
+      let xhr = new XMLHttpRequest();  
+      if (id_inventory == "") {
+        xhr.open("POST", "<%= simpanInventory_helper_json_index_path %>", true);
+        xhr.send(formData);
+      }else{
+        xhr.open("POST", "<%= updateInventory_helper_json_index_path %>", true);
+        xhr.send(formData);
+      }
+
+      xhr.addEventListener("load", function(e){
+        let result = JSON.parse(xhr.response);
+        if (result.status == "tersimpan") {
+          window.location.href = "/master/index?pilihan=Data Inventory";
+        }
+      });
+    });
+
+    $(document).on('click','#hapusFile',function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        $.ajax({
+            url: "<%= deleteFile_helper_json_index_path %>",
+            method: 'GET',
+            data : {
+                      id:id
+                    },
+            success: function(data)
+            {
+                if (data[0]['status'] == "terhapus") {
+                    window.location.href = "/master/index?pilihan=Data Inventory";
+                }
+            }
+        });
+    });
+
+    $("#harga_perolehan").keyup(function () {
+      $('#harga_perolehan_real').val(this.value.replace(/[^\/\d]/g, ''));
+      data = rupiah_formater(this.value, 'Rp.');
+      console.log($('#harga_perolehan_real').val());
+      this.value = data;
+      console.log(this.value)
+    });
+    $("#nilai_residu").keyup(function () {
+      $('#nilai_residu_real').val(this.value.replace(/[^\/\d]/g, ''));
+      data = rupiah_formater(this.value, 'Rp.');
+      console.log($('#nilai_residu_real').val());
+      this.value = data;
+      console.log(this.value)
+    });
+</script>

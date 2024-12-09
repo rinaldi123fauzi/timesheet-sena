@@ -1,0 +1,91 @@
+<div class="card">
+    <div class="card-header" style="background-color: none">
+     <h4>Tambah User</h4>
+    </div>
+    <div class="card-body mt-0">
+      <div class="row" style="margin-bottom: 0px;">
+        <div class="col-sm-12">
+          <%= form_for @user do |f| %>
+            <% if @user.errors.any? %>
+              <div id="error_explanation">
+                <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+                <ul>
+                <% @user.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                </ul>
+              </div>
+            <% end %>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Nama</label>
+                  <%= f.text_field :name, class: 'form-control' %>
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <%= f.email_field :email, class: 'form-control' %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Username</label>
+                  <%= f.text_field :username, class: 'form-control' %>
+                </div>
+                <div class="form-group">
+                  <label>Password</label>
+                  <%= f.password_field :password, class: 'form-control' %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Role</label>
+                  <%= f.collection_select :role_ids, Role.all(), :id, :name, {}, class: 'form-control', multiple: true, id: "select_role" %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="checkbox c-checkbox c-checkbox-rounded">
+                    <%= f.check_box :state, type: 'checkbox' %>
+                    Set Aktif
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary px-3 pull-right">Submit</button>
+              <a href="<%= users_path %>" class="btn btn-light px-3 pull-left">Cancel</a>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+
+<script>
+  $(document).ready(function () {
+    $('.manual').hide();
+    $('.ldap').hide();
+  });
+
+  function changeDs(value) {
+    if (value.val() == "Manual") {
+      $('.ldap').hide();
+      $('.manual').show();
+      $("#user_email").prop('disabled', false);
+    } else if (value.val() == "LDAP") {
+      $('.manual').hide();
+      $('.ldap').show();
+      $("#user_email").prop('disabled', true);
+    } else {
+      $('.ldap').hide();
+      $('.manual').hide();
+    }
+  }
+  $('#user_ldap').select2();
+  $('#select_role').select2();
+
+</script>

@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: projects
+#
+#  id           :bigint           not null, primary key
+#  position_id  :bigint           not null
+#  disipline_id :bigint           not null
+#  nama_proyek  :string
+#  tipe_proyek  :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+
+one:
+  position: one
+  disipline: one
+  nama_proyek: MyString
+  tipe_proyek: MyString
+
+two:
+  position: two
+  disipline: two
+  nama_proyek: MyString
+  tipe_proyek: MyString

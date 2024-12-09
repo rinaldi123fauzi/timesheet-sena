@@ -1,0 +1,38 @@
+# == Schema Information
+#
+# Table name: loans
+#
+#  id               :bigint           not null, primary key
+#  user_id          :bigint
+#  deskripsi        :string
+#  jumlah           :integer
+#  from_date        :date
+#  to_date          :date
+#  penanggung_jawab :string
+#  status           :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  inventory_id     :bigint
+#
+
+one:
+  user: one
+  software: one
+  tool: one
+  deskripsi: MyString
+  jumlah: 1
+  from_date: 2023-03-21
+  to_date: 2023-03-21
+  penanggung_jawab: MyString
+  status: 1
+
+two:
+  user: two
+  software: two
+  tool: two
+  deskripsi: MyString
+  jumlah: 1
+  from_date: 2023-03-21
+  to_date: 2023-03-21
+  penanggung_jawab: MyString
+  status: 1

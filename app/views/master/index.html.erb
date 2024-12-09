@@ -1,0 +1,745 @@
+
+<div class="">  
+  <div class="card">
+    <div class="card-header" style="background-color: none">
+     <h4>List Master</h4>
+    </div>
+    <div class="card-body mt-0">
+      <div class="row" style="margin-bottom: 0px;">
+        <div class="col-sm-4">
+          <%= form_tag master_index_path, method: "GET" %>
+          <% if current_user.roles.any? { |r| r.name == 'superadmin'} %>
+            <%= select_tag :pilihan, options_for_select(["Data Satuan Kerja","Data Karyawan","Data Inventory","Data Item","Data Role","Data User"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
+          <% else %>
+            <%= select_tag :pilihan, options_for_select(["Data Inventory","Data Item"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
+          <% end %>
+        </div>
+        <button type="submit" class="btn btn-info">Pilih</button>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="card">
+  <% if flash[:alert] %>
+    <div class="alert alert-success alert-dismissible show fade">
+      <div class="alert-body">
+        <button class="close" data-dismiss="alert">
+          <span>&times;</span>
+        </button>
+        <%
+          case flash[:alert]
+          when "updated"
+              concat "Updated success"
+          when "created"
+              concat "Created success"
+          when "deleted"
+              concat "Deleted success"
+          else
+              
+          end
+        %>
+      </div>
+    </div>
+  <% end %>
+  <% if params[:pilihan].present? %>
+    <% if flash[:alert] == "success updated" %>
+      <div class="alert alert-success alert-dismissible show fade">
+        <div class="alert-body">
+          <button class="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+          Updated has successfull.
+        </div>
+      </div>
+    <% end %>
+    <% if flash[:alert] == "success created" %>
+      <div class="alert alert-success alert-dismissible show fade">
+        <div class="alert-body">
+          <button class="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+          Created has successfull
+        </div>
+      </div>
+    <% end %>
+    <% if flash[:alert] == "success destroyed" %>
+      <div class="alert alert-success alert-dismissible show fade">
+        <div class="alert-body">
+          <button class="close" data-dismiss="alert">
+            <span>&times;</span>
+          </button>
+          Deleted has successfull
+        </div>
+      </div>
+    <% end %>
+    <% if params[:pilihan] == "Data Role" %>
+      <div class="card-header mt-2">
+        <h4>Data Role</h4>
+        <div class="card-header-form">
+         
+            <div class="align-items-center">
+              <%= link_to "+ Data Role", new_role_path, class: "btn btn-primary btn-sm" %>
+            </div>
+          
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="dataTable_role" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Nama Role</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @roles.each_with_index do |type_worker, index| %>
+              <tr>
+                <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= type_worker.name %></td>
+                <td style="width: 150px;" class="text-center">
+                  
+                  <a href="<%= edit_role_path(type_worker) %>" class="btn btn-warning btn-sm">
+                    <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <% if current_user.can? { |permissions| permissions.role.destroy? } %>
+                  <a href="<%= role_path(type_worker) %>" class="btn btn-danger btn-sm" data-method="DELETE" data-confirm="Are you sure?">
+                    <i class="fas fa-trash-alt"></i>
+                  </a>
+                  <% end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if params[:pilihan] == "Data User" %>
+      <div class="card-header mt-2">
+        <h4>Data User</h4>
+        <div class="card-header-form">
+            
+            <div class="align-items-center">
+                 <%= link_to "+Data User", new_user_path, class: "btn btn-primary btn-sm" %>
+            </div>
+        </div>
+      </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_user" width="100%" cellspacing="0" id="table-1">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 20px;">No</th>
+                  <th>Nama</th>
+                  <th>Jabatan</th>
+                  <th>Username</th>
+                  <th>Role</th>
+                  <th>Status</td>
+                  <th class="text-center" style="width: 100px;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              <% @users.each_with_index do |user, index| %>
+                <tr>
+                  <td class="text-center"><%= index+1 %></td>
+                  <td><%= user.name %></td>
+                  <td><%= user.username %></td>
+                  <td><%= user.name %></td>
+                  <td><%= user.role_assignments.each_with_index.map {|role_assignment| "#{role_assignment.role.try(:name)}"}.join(", ") %></td>
+                  <% if user.state %>
+                    <td>Aktif</td>
+                  <% else %>
+                    <td>Tidak Aktif</td>
+                  <% end %>
+                  <td style="width: 150px;" class="text-center">
+                    
+                      <a href="<%= edit_user_path(user) %>" class="btn btn-warning btn-circle btn-sm">
+                        <i class="fas fa-pencil-alt"></i>
+                      </a>
+                      <%= link_to user_path(user), method: :delete, class: 'btn btn-danger btn-circle btn-sm' do %>
+                        <i class="fas fa-trash-alt"></i>
+                      <% end %>
+                    <% if user.state %>
+                      <% unless user.username == "superadmin"%>
+                        <button class="btn btn-danger btn-sm activation" data-id="<%= user.id %>" data-status="0" title="Deactivated"><i class="fa fa-ban"></i></button>
+                      <% end %>
+                    <% else %>
+                      <button class="btn btn-success btn-sm activation" data-id="<%= user.id %>" data-status="1" title="Activated"><i class="fa fa-check"></i></button>
+                    <% end %>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+    <% end %>
+
+    <% if params[:pilihan] == "Data Karyawan" %>
+      <div class="modal fade" id="karyawan" tabindex="-1" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <input type="hidden" id="id_karyawan">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Id Pegawai</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="id_pegawai">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Tempat Lahir</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="tempat_lahir">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nama</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="nama_pegawai">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Tanggal Lahir</label>
+                      <div class="input-group">
+                        <input type="date" class="form-control" id="tanggal_lahir">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Alamat</label>
+                      <div class="input-group">
+                        <textarea class="form-control" id="alamat"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>No Telepon</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control" id="nomor_telepon">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Id Identitas</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="id_identitas">
+                      </div>
+                    </div>
+                    <div class="form-group" style="padding-top: 20px;">
+                      <label>Email</label>
+                      <div class="input-group">
+                        <input type="email" class="form-control" id="email">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Jabatan</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="jabatan">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Satuan Kerja</label>
+                      <div class="input-group">
+                        <select class="form-control" id="satker"></select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanKaryawan">Simpan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notification"></div>
+
+      <div class="card-header mt-2">
+        <h4>Data Karyawan</h4>
+        <div class="card-header-form">
+              <%# if current_user.can? { |permissions| permissions.category.create? } %>
+            <div class="align-items-center">
+              <%# <%= link_to "+ Data Kategori", new_employee_path, class: "btn btn-primary btn-sm" %>
+              <button type="button" class="btn btn-primary btn-sm tambah-karyawan" data-backdrop="true" data-toggle="modal" data-target="#karyawan">+Tambah</button>
+            </div>
+          <%# end %>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_kategori" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Nama Pegawai</th>
+                <th>Nomor Telepon</th>
+                <th>Jabatan</th>
+                <th>Satuan Kerja</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @employees.each_with_index do |employee, index| %>
+              <tr>
+                <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= employee.nama %></td>
+                <td><%= employee.nomor_telepon %></td>
+                <td><%= employee.jabatan %></td>
+                <td><%= employee.work_unit.nama %></td>
+                <td style="width: 150px;" class="text-center">
+                  <%# if current_user.can? { |permissions| permissions.category.update? } %>
+                  <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahKaryawan" data-toggle="modal" data-target="#karyawan" data-id="<%= employee.id %>">
+                      <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <%# end %>
+                  <%# if current_user.can? { |permissions| permissions.category.destroy? } %>
+                  <a href="#" class="btn btn-danger btn-circle btn-sm" id="hapusKaryawan" data-id="<%= employee.id %>" data-confirm="Are you sure?">
+                      <i class="fas fa-trash-alt"></i>
+                  </a>
+                  <%# end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if params[:pilihan] == "Data Satuan Kerja" %>
+      <div class="modal fade" id="satker" tabindex="-1" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <input type="hidden" id="id_satker">
+                <div class="form-group">
+                  <label>Nama</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="nama_satker">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanSatker">Simpan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-header mt-2">
+        <h4>Data Satuan Kerja</h4>
+        <div class="card-header-form">
+              <%# if current_user.can? { |permissions| permissions.category.create? } %>
+            <div class="align-items-center">
+              <%# <%= link_to "+ Data Kategori", new_employee_path, class: "btn btn-primary btn-sm" %>
+              <button type="button" class="btn btn-primary btn-sm tambah-satker" data-backdrop="true" data-toggle="modal" data-target="#satker">+Tambah</button>
+            </div>
+          <%# end %>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_kategori" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Nama</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @work_units.each_with_index do |work_unit, index| %>
+              <tr>
+                <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= work_unit.nama %></td>
+                <td style="width: 150px;" class="text-center">
+                  <%# if current_user.can? { |permissions| permissions.category.update? } %>
+                  <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahSatker" data-toggle="modal" data-target="#satker" data-id="<%= work_unit.id %>">
+                      <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <%# end %>
+                  <%# if current_user.can? { |permissions| permissions.category.destroy? } %>
+                  <a href="#" class="btn btn-danger btn-circle btn-sm" id="hapusSatker" data-id="<%= work_unit.id %>" data-confirm="Are you sure?">
+                      <i class="fas fa-trash-alt"></i>
+                  </a>
+                  <%# end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if params[:pilihan] == "Data Inventory" %>
+      <div class="modal fade" id="inventory" tabindex="-1" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form enctype="multipart/form-data">
+                <input type="hidden" name="authenticity_token" id="authenticity_token" value="<%= form_authenticity_token %>">
+                <input type="hidden" id="id_inventory" name="id_inventory">
+                <div class="form-group">
+                  <label>Kode</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="kode" id="kode">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Item</label>
+                  <div class="input-group">
+                    <select name="item" id="item" class="form-control"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Merek</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="merek" id="merek">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Tahun Perolehan</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" name="tahun_perolehan" id="tahun_perolehan">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Harga Perolehan</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="harga_perolehan">
+                    <input type="hidden" class="form-control" name="harga_perolehan" id="harga_perolehan_real">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Nilai Residu</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="nilai_residu">
+                    <input type="hidden" class="form-control" name="nilai_residu" id="nilai_residu_real">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Masa Guna</label>
+                  <div class="input-group">
+                    <input type="date" class="form-control" name="masa_guna" id="masa_guna">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Lama Pakai</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="lama_pakai" id="lama_pakai">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Kondisi</label>
+                  <div class="input-group">
+                    <select name="kondisi" id="kondisi" class="form-control"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Lokasi</label>
+                  <div class="input-group">
+                    <select name="lokasi" id="lokasi" class="form-control"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Foto</label>
+                  <div class="input-group">
+                    <input type="file" class="form-control" id="foto_inventory" name="foto_inventory">
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanInventory">Simpan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="viewInventory" tabindex="-1" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Kode</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewkode" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Merek</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewmerek" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Item</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewitem" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Tahun Perolehan</label>
+                      <div class="input-group">
+                        <input type="date" class="form-control" id="viewtahun_perolehan" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Harga Perolehan</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewharga_perolehan" disabled>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Masa Guna</label>
+                      <div class="input-group">
+                        <input type="date" class="form-control" id="viewmasa_guna" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Nilai Residu</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewnilai_residu" disabled>
+                      </div>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label>Lama Pakai</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewlama_pakai" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Kondisi</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewkondisi" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Lokasi</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="viewlokasi" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-header mt-2">
+        <h4>Data Inventory</h4>
+        <div class="card-header-form">
+              <%# if current_user.can? { |permissions| permissions.category.create? } %>
+            <div class="align-items-center">
+              <%# <%= link_to "+ Data Kategori", new_employee_path, class: "btn btn-primary btn-sm" %>
+              <button type="button" class="btn btn-primary btn-sm tambah-inventory" data-backdrop="true" data-toggle="modal" data-target="#inventory">+Tambah</button>
+            </div>
+          <%# end %>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_kategori" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Kode</th>
+                <th>Item</th>
+                <th>Merek</th>
+                <th>Kondisi</th>
+                <th>Lokasi</th>
+                <th>Pengguna</th>
+                <th>File</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @inventories.each_with_index do |inventory, index| %>
+                <tr>
+                  <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                  <td><%= inventory.kode %></td>
+                  <td><%= inventory.item.nama_item %></td>
+                  <td><%= inventory.merek %></td>
+                  <td><%= inventory.kondisi %></td>
+                  <% if inventory.lokasi == "dipinjam" %>
+                    <td><span class="badge badge-danger"><%= inventory.lokasi %></span></td>
+                  <% else %>
+                    <td><%= inventory.lokasi %></td>
+                  <% end %>
+                  <td><%= inventory.user.try(:username) %></td>
+                  <td>
+                    <% inventory.foto_inventory.order(:created_at => :desc).each do |lampiran| %>
+                      <span style="margin-right: 10px">
+                          <%= link_to "View File", rails_blob_path(lampiran, disposition: 'preview'), class: "badge badge-primary badge-xs", :target => "_blank" %>
+                          <a href="#" id="hapusFile" class="badge badge-danger badge-xs" data-id="<%= lampiran.id %>" data-confirm="Are you sure?"> Delete File </a>
+                          <br>
+                      </span>
+                    <% end %>
+                  </td>
+                  <td style="width: 150px;" class="text-center">
+                    <a href="#" class="btn btn-primary btn-circle btn-sm" id="lihatInventory" data-toggle="modal" data-target="#viewInventory" data-id="<%= inventory.id %>">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    <%# if current_user.can? { |permissions| permissions.category.update? } %>
+                    <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahInventory" data-toggle="modal" data-target="#inventory" data-id="<%= inventory.id %>">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <%# end %>
+                    <%# if current_user.can? { |permissions| permissions.category.destroy? } %>
+                    <a href="<%= inventory_path(inventory) %>" class="btn btn-danger btn-circle btn-sm" data-method="DELETE" data-confirm="Are you sure?">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                    <%# end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <% if params[:pilihan] == "Data Item" %>
+        <div class="modal fade" id="item" tabindex="-1" role="dialog" aria-labelledby="formModal"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="formModal"></h5>
+                <button type="button" class="close" id="close-modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                  <input type="hidden" id="id_item" name="id_item">
+                  <div class="form-group">
+                    <label>Nama Item</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="nama_item" name="nama_item">
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanItem">Simpan</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-header mt-2">
+          <h4>Data Item</h4>
+          <div class="card-header-form">
+               <%# if current_user.can? { |permissions| permissions.work_unit.create? } %>
+              <div class="align-items-center">
+                <%# <%= link_to "+ Data Software", new_software_path, class: "btn btn-primary btn-sm" %>
+                <button type="button" class="btn btn-primary btn-sm tambah-item" data-backdrop="true" data-toggle="modal" data-target="#item">+Tambah</button>
+              </div>
+            <%# end %>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+             <table class="table table-bordered" id="dataTable_sub_kategori" width="100%" cellspacing="0" id="table-1">
+              <thead>
+                <tr>
+                  <th style="width: 50px;" class="text-center">No</th>
+                  <th>Nama Item</th>
+                  <th style="width: 150px;" class="text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @items.each_with_index do |item, index| %>
+                <tr>
+                  <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                  <td><%= item.nama_item %></td>
+                  <td style="width: 150px;" class="text-center">
+                    <%# if current_user.can? { |permissions| permissions.work_unit.update? } %>
+                    <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahItem" data-toggle="modal" data-target="#item" data-id="<%= item.id %>">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <%# end %>
+                    <%# if current_user.can? { |permissions| permissions.work_unit.destroy? } %>
+                    <a href="<%= item_path(item) %>" class="btn btn-danger btn-circle btn-sm" data-method="DELETE" data-confirm="Are you sure?">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                    <%# end %>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    <% end %>
+  <% end %>
+  </div>
+
+</div>
+
+
+<%= render "js_inventory" %>
+<%= render "js_item" %>
+<%= render "js_satker" %>
+<%= render "js_karyawan" %>
+<%= render "js_user" %>

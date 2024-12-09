@@ -1,0 +1,17 @@
+        <aside id="sidebar-wrapper">
+          <div class="sidebar-brand">
+            <a href="#"> <%= image_tag "sena.png", class: "header-logo", style:"height: 45px;" %> <span
+                class="logo-name" style="font-size: 8px;">Asset Management</span>
+            </a>
+          </div>
+          <ul class="sidebar-menu">
+            <li class="menu-header">Main</li>
+            <li class="dropdown <%= params[:controller] == "home" ? " active" : ""%>">
+              <a href="<%= root_path %>" class="nav-link"><i data-feather="monitor"></i><span>Dashboard</span></a>
+            </li>
+              <% if current_user.roles.any? { |r| r.name != 'user'} %>
+                <li class="<%= params[:controller] == "master" ? " active" : ""%>"><a class="nav-link" href="<%= master_index_path %>"><i data-feather="file"></i><span>Master Data</span></a></li>
+              <% end %>
+              <li class="<%= params[:controller] == "loans" ? " active" : ""%>"><a class="nav-link" href="<%= loans_path %>"><i data-feather="file"></i><span>List Peminjaman</span></a></li>
+          </ul>
+        </aside>

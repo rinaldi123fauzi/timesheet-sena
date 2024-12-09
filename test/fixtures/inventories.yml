@@ -1,0 +1,45 @@
+# == Schema Information
+#
+# Table name: inventories
+#
+#  id              :bigint           not null, primary key
+#  kode            :string
+#  item_id         :bigint
+#  merek           :string
+#  tahun_perolehan :date
+#  harga_perolehan :integer
+#  nilai_residu    :integer
+#  masa_guna       :date
+#  lama_pakai      :string
+#  kondisi         :string
+#  lokasi          :string
+#  user_id         :bigint
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
+
+one:
+  kode: MyString
+  item: one
+  merek: MyString
+  tahun_perolehan: 2023-03-26
+  harga_perolehan: 1
+  nilai_residu: 1
+  masa_guna: 2023-03-26
+  lama_pakai: MyString
+  kondisi: MyString
+  lokasi: MyString
+  user: one
+
+two:
+  kode: MyString
+  item: two
+  merek: MyString
+  tahun_perolehan: 2023-03-26
+  harga_perolehan: 1
+  nilai_residu: 1
+  masa_guna: 2023-03-26
+  lama_pakai: MyString
+  kondisi: MyString
+  lokasi: MyString
+  user: two
