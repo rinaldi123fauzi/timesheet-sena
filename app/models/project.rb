@@ -12,5 +12,5 @@
 #
 class Project < ApplicationRecord
   belongs_to :position
-  belongs_to :disipline
+  belongs_to :disipline 
 end

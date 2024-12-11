@@ -12,4 +12,7 @@
 class Disipline < ApplicationRecord
   belongs_to :division
   belongs_to :department
+  has_many :position
+  has_many :project
+  has_many :activity
 end

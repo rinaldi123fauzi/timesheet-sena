@@ -8,4 +8,6 @@
 #  updated_at  :datetime         not null
 #
 class Division < ApplicationRecord
+    has_many :department
+    has_many :disipline
 end

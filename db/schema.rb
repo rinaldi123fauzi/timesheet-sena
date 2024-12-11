@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_09_023923) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_09_032343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_09_023923) do
     t.string "checksum", null: false
     t.datetime "created_at", precision: nil, null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "activities", force: :cascade do |t|
+    t.bigint "disipline_id", null: false
+    t.string "nama_aktifitas"
+    t.string "deskripsi"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["disipline_id"], name: "index_activities_on_disipline_id"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -169,6 +178,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_09_023923) do
     t.index ["user_id"], name: "index_team_projects_on_user_id"
   end
 
+  create_table "timesheets", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_project_id", null: false
+    t.bigint "activity_id", null: false
+    t.decimal "man_hours"
+    t.integer "week"
+    t.integer "month"
+    t.integer "year"
+    t.string "deskripsi"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id"], name: "index_timesheets_on_activity_id"
+    t.index ["team_project_id"], name: "index_timesheets_on_team_project_id"
+    t.index ["user_id"], name: "index_timesheets_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -192,6 +217,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_09_023923) do
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activities", "disiplines"
   add_foreign_key "approvals", "loans"
   add_foreign_key "departments", "divisions"
   add_foreign_key "disiplines", "departments"
@@ -208,4 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_09_023923) do
   add_foreign_key "role_assignments", "users"
   add_foreign_key "team_projects", "projects"
   add_foreign_key "team_projects", "users"
+  add_foreign_key "timesheets", "activities"
+  add_foreign_key "timesheets", "team_projects"
+  add_foreign_key "timesheets", "users"
 end
