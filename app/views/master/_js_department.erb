@@ -1,0 +1,123 @@
+<script>
+  $('#divisions').select2();
+  $(document).on('click','#simpanDepartemen',function(e){
+    e.preventDefault();
+    var namaDepartemen = $('#nama_departemen').val();
+    var divisi = $('#divisions').val();
+    var id_departemen = $('#id_departemen').val();
+    $('#simpanDepartemen').text('Loading...');
+    if (id_departemen == "") {
+      $.ajax({
+        url: "/transaksi/departments/create",
+        method: 'POST',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_departemen:namaDepartemen,
+          divisi:divisi
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            window.location = "/master/index?pilihan=Departemen";
+          }
+        }
+      });
+    }else{
+      $.ajax({
+        url: "/transaksi/departments/update",
+        method: 'PUT',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_departemen:namaDepartemen,
+          divisi:divisi,
+          id_departemen:id_departemen
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            setInterval(function() {
+              window.location = "/master/index?pilihan=Departemen";
+            }, 500);
+          }
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#ubahDepartemen', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#id_departemen').empty();
+    $('#nama_departemen').empty();
+    $('#divisions').empty();
+    $('.modal-title').text('Ubah Data');
+    $.ajax({
+      url: "/transaksi/departments/detail",
+      method: 'GET',
+      data : {
+        id:id
+      },
+      success: function(data)
+      {
+        $('#id_departemen').val(id);
+        $('#nama_departemen').val(data['data']['nama_department']);
+        for (let i = 0; i < data['divisions'].length; i++) {
+          const element = data['divisions'][i];
+          if (element['id'] == data['data']['division_id']) {
+            $('#divisions').append(`
+              <option value="${element['id']}" selected>${element['nama_divisi']}</option>
+            `);
+          }else{
+            $('#divisions').append(`
+              <option value="${element['id']}">${element['nama_divisi']}</option>
+            `);
+          }
+        }
+      }
+    });
+  });
+
+  $(document).on('click', '.tambah-departemen', function(){
+    var id = 1;
+    $('#nama_departemen').val('');
+    $('#divisions').empty();
+    $('#id_departemen').val('');
+    $('.modal-title').text('Tambah Data');
+    $.ajax({
+      url: "/transaksi/departments/divisions",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#divisions').append(`
+            <option value="${element['id']}">${element['nama_divisi']}</option>
+          `);
+        }
+      }
+    });
+  });
+
+  $(document).on('click','#hapusDepartemen',function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      url: "/transaksi/departments/delete",
+      method: 'DELETE',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        if (data['status'] == 200) {
+          window.location.href = "/master/index?pilihan=Departemen";
+        }
+      }
+    });
+  });
+</script>

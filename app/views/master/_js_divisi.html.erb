@@ -1,0 +1,87 @@
+<script>
+  $(document).on('click','#simpanDivisi',function(e){
+    e.preventDefault();
+    var namaDivisi = $('#nama_divisi').val();
+    var id_divisi = $('#id_divisi').val();
+    $('#simpanDivisi').text('Loading...');
+    if (id_divisi == "") {
+      $.ajax({
+        url: "/transaksi/divisions/create",
+        method: 'POST',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_divisi:namaDivisi,
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            window.location = "/master/index?pilihan=Divisi";
+          }
+        }
+      });
+    }else{
+      $.ajax({
+        url: "/transaksi/divisions/update",
+        method: 'PUT',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_divisi:namaDivisi,
+          id_divisi:id_divisi
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            setInterval(function() {
+              window.location = "/master/index?pilihan=Divisi";
+            }, 500);
+          }
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#ubahDivisi', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#id_divisi').empty();
+    $('#nama_divisi').empty();
+    $('.modal-title').text('Ubah Data');
+    $.ajax({
+      url: "/transaksi/divisions/detail",
+      method: 'GET',
+      data : {
+        id:id
+      },
+      success: function(data)
+      {
+        $('#id_divisi').val(id);
+        $('#nama_divisi').val(data['data']['nama_divisi']);
+      }
+    });
+  });
+
+  $(document).on('click', '.tambah-divisi', function(){
+    $('#nama_divisi').val('');
+    $('#id_divisi').val('');
+    $('.modal-title').text('Tambah Data');
+  });
+
+  $(document).on('click','#hapusDivisi',function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      url: "/transaksi/divisions/delete",
+      method: 'DELETE',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        if (data['status'] == 200) {
+          window.location.href = "/master/index?pilihan=Divisi";
+        }
+      }
+    });
+  });
+</script>

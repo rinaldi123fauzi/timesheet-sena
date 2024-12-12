@@ -64,6 +64,22 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :transaksi do
+    scope :divisions do
+      get 'detail' => 'divisions#detail'
+      post 'create' => 'divisions#create'
+      put 'update' => 'divisions#update'
+      delete 'delete' => 'divisions#delete'
+    end
+
+    scope :departments do
+      get 'detail' => 'departments#detail'
+      get 'divisions' => 'departments#divisions'
+      post 'create' => 'departments#create'
+      put 'update' => 'departments#update'
+      delete 'delete' => 'departments#delete'
+    end
+  end
   
   # resources :categories do
   #   resources :contacts, only: [:index], module: :categories
