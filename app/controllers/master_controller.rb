@@ -7,6 +7,7 @@ class MasterController < ApplicationController
     @departements = Department.all.order("CREATED_AT DESC")
     @disiplines = Disipline.all.order("CREATED_AT DESC")
     @positions = Position.all.order("CREATED_AT DESC")
+    @projects = Project.all.order("CREATED_AT DESC")
     @inventories = Inventory.all.order("CREATED_AT DESC")
     @items = Item.all.order("CREATED_AT DESC")
   end

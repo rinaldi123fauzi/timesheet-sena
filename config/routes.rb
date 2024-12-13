@@ -96,6 +96,15 @@ Rails.application.routes.draw do
       put 'update' => 'positions#update'
       delete 'delete' => 'positions#delete'
     end
+
+    scope :projects do
+      get 'detail' => 'projects#detail'
+      get 'positions' => 'projects#positions'
+      get 'disiplines' => 'projects#disiplines'
+      post 'create' => 'projects#create'
+      put 'update' => 'projects#update'
+      delete 'delete' => 'projects#delete'
+    end
   end
   
   # resources :categories do
