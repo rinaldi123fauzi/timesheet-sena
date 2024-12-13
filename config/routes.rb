@@ -79,6 +79,23 @@ Rails.application.routes.draw do
       put 'update' => 'departments#update'
       delete 'delete' => 'departments#delete'
     end
+
+    scope :disiplines do
+      get 'detail' => 'disiplines#detail'
+      get 'divisions' => 'disiplines#divisions'
+      get 'departments' => 'disiplines#departments'
+      post 'create' => 'disiplines#create'
+      put 'update' => 'disiplines#update'
+      delete 'delete' => 'disiplines#delete'
+    end
+
+    scope :positions do
+      get 'detail' => 'positions#detail'
+      get 'disiplines' => 'positions#disiplines'
+      post 'create' => 'positions#create'
+      put 'update' => 'positions#update'
+      delete 'delete' => 'positions#delete'
+    end
   end
   
   # resources :categories do

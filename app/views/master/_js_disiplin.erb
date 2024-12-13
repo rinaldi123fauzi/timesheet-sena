@@ -1,0 +1,158 @@
+<script>
+  $('#divisions').select2();
+  $('#departments').select2();
+  $(document).on('click','#simpanDisiplin',function(e){
+    e.preventDefault();
+    var namaDisiplin = $('#nama_disiplin').val();
+    var divisi = $('#divisions').val();
+    var departemen = $('#departments').val();
+    var id_disiplin = $('#id_disiplin').val();
+    $('#simpanDisiplin').text('Loading...');
+    if (id_disiplin == "") {
+      $.ajax({
+        url: "/transaksi/disiplines/create",
+        method: 'POST',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_disiplin:namaDisiplin,
+          divisi:divisi,
+          departemen:departemen
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            window.location = "/master/index?pilihan=Disiplin";
+          }
+        }
+      });
+    }else{
+      $.ajax({
+        url: "/transaksi/disiplines/update",
+        method: 'PUT',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_disiplin:namaDisiplin,
+          divisi:divisi,
+          departemen:departemen,
+          id_disiplin:id_disiplin
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            setInterval(function() {
+              window.location = "/master/index?pilihan=Disiplin";
+            }, 500);
+          }
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#ubahDisiplin', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#id_disiplin').empty();
+    $('#nama_disiplin').empty();
+    $('#divisions').empty();
+    $('#departments').empty();
+    $('.modal-title').text('Ubah Data');
+    $.ajax({
+      url: "/transaksi/disiplines/detail",
+      method: 'GET',
+      data : {
+        id:id
+      },
+      success: function(data)
+      {
+        $('#id_departemen').val(id);
+        $('#nama_disiplin').val(data['data']['nama_disiplin']);
+        for (let i = 0; i < data['divisions'].length; i++) {
+          const element = data['divisions'][i];
+          if (element['id'] == data['data']['division_id']) {
+            $('#divisions').append(`
+              <option value="${element['id']}" selected>${element['nama_divisi']}</option>
+            `);
+          }else{
+            $('#divisions').append(`
+              <option value="${element['id']}">${element['nama_divisi']}</option>
+            `);
+          }
+        }
+        for (let i = 0; i < data['departments'].length; i++) {
+          const element = data['departments'][i];
+          if (element['id'] == data['data']['department_id']) {
+            $('#departments').append(`
+              <option value="${element['id']}" selected>${element['nama_department']}</option>
+            `);
+          }else{
+            $('#departments').append(`
+              <option value="${element['id']}">${element['nama_department']}</option>
+            `);
+          }
+        }
+      }
+    });
+  });
+
+  $(document).on('click', '.tambah-disiplin', function(){
+    var id = 1;
+    $('#nama_disiplin').val('');
+    $('#divisions').empty();
+    $('#departments').empty();
+    $('#id_disiplin').val('');
+    $('.modal-title').text('Tambah Data');
+    $.ajax({
+      url: "/transaksi/disiplines/divisions",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#divisions').append(`
+            <option value="${element['id']}">${element['nama_divisi']}</option>
+          `);
+        }
+      }
+    });
+    $.ajax({
+      url: "/transaksi/disiplines/departments",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#departments').append(`
+            <option value="${element['id']}">${element['nama_department']}</option>
+          `);
+        }
+      }
+    });
+  });
+
+  $(document).on('click','#hapusDisiplin',function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      url: "/transaksi/disiplines/delete",
+      method: 'DELETE',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        if (data['status'] == 200) {
+          window.location.href = "/master/index?pilihan=Disiplin";
+        }
+      }
+    });
+  });
+</script>

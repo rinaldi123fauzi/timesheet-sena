@@ -1,0 +1,123 @@
+<script>
+  $('#disiplines').select2();
+  $(document).on('click','#simpanPosisi',function(e){
+    e.preventDefault();
+    var namaPosisi = $('#nama_posisi').val();
+    var disiplin = $('#disiplines').val();
+    var id_posisi = $('#id_posisi').val();
+    $('#simpanPosisi').text('Loading...');
+    if (id_posisi == "") {
+      $.ajax({
+        url: "/transaksi/positions/create",
+        method: 'POST',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_posisi:namaPosisi,
+          disiplin:disiplin
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            window.location = "/master/index?pilihan=Posisi";
+          }
+        }
+      });
+    }else{
+      $.ajax({
+        url: "/transaksi/positions/update",
+        method: 'PUT',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          nama_posisi:namaPosisi,
+          disiplin:disiplin,
+          id_posisi:id_posisi
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            setInterval(function() {
+              window.location = "/master/index?pilihan=Posisi";
+            }, 500);
+          }
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#ubahPosisi', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#id_posisi').empty();
+    $('#nama_posisi').empty();
+    $('#disiplines').empty();
+    $('.modal-title').text('Ubah Data');
+    $.ajax({
+      url: "/transaksi/positions/detail",
+      method: 'GET',
+      data : {
+        id:id
+      },
+      success: function(data)
+      {
+        $('#id_posisi').val(id);
+        $('#nama_posisi').val(data['data']['nama_posisi']);
+        for (let i = 0; i < data['disiplines'].length; i++) {
+          const element = data['disiplines'][i];
+          if (element['id'] == data['data']['disipline_id']) {
+            $('#disiplines').append(`
+              <option value="${element['id']}" selected>${element['nama_disiplin']}</option>
+            `);
+          }else{
+            $('#disiplines').append(`
+              <option value="${element['id']}">${element['nama_disiplin']}</option>
+            `);
+          }
+        }
+      }
+    });
+  });
+
+  $(document).on('click', '.tambah-posisi', function(){
+    var id = 1;
+    $('#nama_disiplin').val('');
+    $('#disiplines').empty();
+    $('#id_posisi').val('');
+    $('.modal-title').text('Tambah Data');
+    $.ajax({
+      url: "/transaksi/positions/disiplines",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#disiplines').append(`
+            <option value="${element['id']}">${element['nama_disiplin']}</option>
+          `);
+        }
+      }
+    });
+  });
+
+  $(document).on('click','#hapusPosisi',function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      url: "/transaksi/positions/delete",
+      method: 'DELETE',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        if (data['status'] == 200) {
+          window.location.href = "/master/index?pilihan=Posisi";
+        }
+      }
+    });
+  });
+</script>
