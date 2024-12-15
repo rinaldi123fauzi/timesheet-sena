@@ -745,6 +745,95 @@
       </div>
     <% end %>
 
+    <% if params[:pilihan] == "Tim Proyek" %>
+      <div class="modal fade" id="tim-proyek" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <input type="hidden" id="id_tim_proyek">
+                <div class="form-group">
+                  <label>Proyek</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="nama-proyek" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>PM</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="pm" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Member</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="member" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanTimProyek">Simpan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-header mt-2">
+        <h4>Data Tim Proyek</h4>
+        <div class="card-header-form">
+              <%# if current_user.can? { |permissions| permissions.category.create? } %>
+            <div class="align-items-center">
+              <%# <%= link_to "+ Data Kategori", new_employee_path, class: "btn btn-primary btn-sm" %>
+              <button type="button" class="btn btn-primary btn-sm tambah-tim-proyek" data-backdrop="true" data-toggle="modal" data-target="#tim-proyek">+Tambah</button>
+            </div>
+          <%# end %>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_kategori" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Nama Proyek</th>
+                <th>PM</th>
+                <th>Member</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @team_projects.each_with_index do |team_project, index| %>
+              <tr>
+                <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= team_project.project.nama_proyek %></td>
+                <td><%= team_project.pm %></td>
+                <td><%= team_project.user.email %></td>
+                <td style="width: 150px;" class="text-center">
+                  <%# if current_user.can? { |permissions| permissions.category.update? } %>
+                  <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahTimProyek" data-toggle="modal" data-target="#tim-proyek" data-id="<%= team_project.id %>">
+                      <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <%# end %>
+                  <%# if current_user.can? { |permissions| permissions.category.destroy? } %>
+                  <a href="#" class="btn btn-danger btn-circle btn-sm" id="hapusTimProyek" data-id="<%= team_project.id %>" data-confirm="Are you sure?">
+                      <i class="fas fa-trash-alt"></i>
+                  </a>
+                  <%# end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
     <% if params[:pilihan] == "Data Inventory" %>
       <div class="modal fade" id="inventory" tabindex="-1" role="dialog" aria-labelledby="formModal"
         aria-hidden="true">
@@ -1084,6 +1173,7 @@
 <%= render "js_department" %>
 <%= render "js_position" %>
 <%= render "js_project" %>
+<%= render "js_team_project" %>
 <%= render "js_disiplin" %>
 <%= render "js_karyawan" %>
 <%= render "js_user" %>

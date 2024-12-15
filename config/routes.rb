@@ -105,6 +105,15 @@ Rails.application.routes.draw do
       put 'update' => 'projects#update'
       delete 'delete' => 'projects#delete'
     end
+
+    scope :team_projects do
+      get 'detail' => 'team_projects#detail'
+      get 'projects' => 'team_projects#projects'
+      get 'users' => 'team_projects#users'
+      post 'create' => 'team_projects#create'
+      put 'update' => 'team_projects#update'
+      delete 'delete' => 'team_projects#delete'
+    end
   end
   
   # resources :categories do

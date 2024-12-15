@@ -1,0 +1,176 @@
+<script>
+  $('#nama-proyek').select2();
+  $('#pm').select2();
+  $('#member').select2();
+  $(document).on('click','#simpanTimProyek',function(e){
+    e.preventDefault();
+    var namaProyek = $('#nama-proyek').val();
+    var pm = $('#pm').val();
+    var member = $('#member').val();
+    var id_tim_proyek = $('#id_tim_proyek').val();
+    $('#simpanTimProyek').text('Loading...');
+    if (id_tim_proyek == "") {
+      $.ajax({
+        url: "/transaksi/team_projects/create",
+        method: 'POST',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          proyek:namaProyek,
+          pm:pm,
+          member:member
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            window.location = "/master/index?pilihan=Tim Proyek";
+          }
+        }
+      });
+    }else{
+      $.ajax({
+        url: "/transaksi/team_projects/update",
+        method: 'PUT',
+        data : {
+          authenticity_token: '<%= form_authenticity_token %>',
+          proyek:namaProyek,
+          pm:pm,
+          member:member,
+          id_tim_proyek:id_tim_proyek
+        },
+        success: function(data)
+        {
+          if (data['status'] == 200) {
+            setInterval(function() {
+              window.location = "/master/index?pilihan=Tim Proyek";
+            }, 500);
+          }
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#ubahTimProyek', function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $('#id_tim_proyek').empty();
+    $('#nama-proyek').empty();
+    $('#pm').empty();
+    $('#member').empty();
+    $('.modal-title').text('Ubah Data');
+    $.ajax({
+      url: "/transaksi/team_projects/detail",
+      method: 'GET',
+      data : {
+        id:id
+      },
+      success: function(data)
+      {
+        $('#id_tim_proyek').val(id);
+        for (let i = 0; i < data['users'].length; i++) {
+          const element = data['users'][i];
+          if (element['email'] == data['data']['pm']) {
+            $('#pm').append(`
+              <option value="${element['email']}" selected>${element['email']}</option>
+            `);
+          }else{
+            $('#pm').append(`
+              <option value="${element['email']}">${element['email']}</option>
+            `);
+          }
+        }
+        for (let i = 0; i < data['users'].length; i++) {
+          const element = data['users'][i];
+          if (element['id'] == data['data']['user_id']) {
+            $('#member').append(`
+              <option value="${element['id']}" selected>${element['email']}</option>
+            `);
+          }else{
+            $('#member').append(`
+              <option value="${element['id']}">${element['email']}</option>
+            `);
+          }
+        }
+        for (let i = 0; i < data['projects'].length; i++) {
+          const element = data['projects'][i];
+          if (element['id'] == data['data']['project_id']) {
+            $('#nama-proyek').append(`
+              <option value="${element['id']}" selected>${element['nama_proyek']}</option>
+            `);
+          }else{
+            $('#nama-proyek').append(`
+              <option value="${element['id']}">${element['nama_proyek']}</option>
+            `);
+          }
+        }
+      }
+    });
+  });
+
+  $(document).on('click', '.tambah-tim-proyek', function(){
+    var id = 1;
+    $('#nama-proyek').val('');
+    $('#pm').empty();
+    $('#member').empty();
+    $('#id_tim_proyek').val('');
+    $('.modal-title').text('Tambah Data');
+    $.ajax({
+      url: "/transaksi/team_projects/users",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#pm').append(`
+            <option value="${element['email']}">${element['email']}</option>
+          `);
+        }
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#member').append(`
+            <option value="${element['id']}">${element['email']}</option>
+          `);
+        }
+      }
+    });
+    $.ajax({
+      url: "/transaksi/team_projects/projects",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#nama-proyek').append(`
+            <option value="${element['id']}">${element['nama_proyek']}</option>
+          `);
+        }
+      }
+    });
+  });
+
+  $(document).on('click','#hapusTimProyek',function(e){
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      url: "/transaksi/team_projects/delete",
+      method: 'DELETE',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        if (data['status'] == 200) {
+          window.location.href = "/master/index?pilihan=Tim Proyek";
+        }
+      }
+    });
+  });
+</script>
