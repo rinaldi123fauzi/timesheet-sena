@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_11_063040) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_17_083851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -92,6 +92,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_11_063040) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["work_unit_id"], name: "index_employees_on_work_unit_id"
+  end
+
+  create_table "holidays", force: :cascade do |t|
+    t.date "tanggal_libur"
+    t.string "nama_libur"
+    t.boolean "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "inventories", force: :cascade do |t|
@@ -190,6 +198,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_11_063040) do
     t.string "deskripsi"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "tanggal"
+    t.integer "parent_id"
     t.index ["activity_id"], name: "index_timesheets_on_activity_id"
     t.index ["team_project_id"], name: "index_timesheets_on_team_project_id"
     t.index ["user_id"], name: "index_timesheets_on_user_id"

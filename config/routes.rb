@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :timesheets
   resources :inventories
   resources :items
   resources :approvals

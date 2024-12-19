@@ -13,6 +13,8 @@
 #  deskripsi       :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  tanggal         :date
+#  parent_id       :integer
 #
 class Timesheet < ApplicationRecord
   belongs_to :user

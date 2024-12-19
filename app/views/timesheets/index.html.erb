@@ -1,0 +1,11 @@
+<% @resultArray.each do |data| %>
+  <% if data['weekend'] == true %>
+    <h3 style="color: red;"><%= data['tanggal'] %> Weekend</h3>
+  <% else %>
+    <% if data['libur'] == true %>
+      <h3 style="color: red;"><%= data['tanggal'] %> - <%= data['keterangan'] %></h3>
+    <% else %>
+      <h3><%= data['tanggal'] %></h3>
+    <% end %>
+  <% end %>
+<% end %>
