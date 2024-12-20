@@ -1,63 +1,31 @@
-<!--<h2>Log in</h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
-
-<%= render "users/shared/links" %>-->
-
-<div class="container">
-  <!-- Outer Row -->
-  <div class="row justify-content-center mt-4">
-    <div class="col-md-5">
-      <div class="card o-hidden border-0 shadow-lg my-5">
-        <div class="card-body p-0">
-          <!-- Nested Row within Card Body -->
-          <div class="row">
-            <div class="col-md">
-              <div class="p-5">
-                <div class="text-center">
-                  <%= image_tag "sena-logo1.png", class: "img-fluid", style:"height: 150px;" %>
-                  <h5 style="color: blue;">Timesheet</h5>
-                </div>
-                <hr>
-                <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "user"}) do |f| %>
-                  <div class="form-group">
-                    <%= f.text_field :username, class: "form-control form-control-user", placeholder: "Enter Username.." %>
-                  </div>
-                  <div class="form-group">
-                    <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-user", placeholder: "Password" %>
-                  </div>
-                  <%= f.submit "Login", class: "btn btn-primary btn-user btn-block" %>
-                  <hr>
-                  <div class="copyright text-center my-auto">
-                       <span>&copy;<%= Date.today.year %> <br>PT. Solusi Energi Nusantara</span>
-                    </div>
-                <% end %>
-              </div>
-            </div>
+<div class="wrapper vh-100">
+  <div class="row align-items-center h-100">
+    <div class="col-lg-6 d-none d-lg-flex">
+    </div> <!-- ./col -->
+    <div class="col-lg-6">
+      <div class="w-50 mx-auto">
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "mx-auto text-center"}) do |f| %>
+          <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
+            <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+              <g>
+                <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+              </g>
+            </svg>
+          </a>
+          <h1 class="h6 mb-3">Timesheets</h1>
+          <div class="form-group">
+            <label for="inputEmail" class="sr-only">Email address</label>
+            <%= f.text_field :username, class: "form-control form-control-lg", placeholder: "Email address" %>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="form-group">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <%= f.password_field :password, autocomplete: "current-password", class: "form-control form-control-lg", placeholder: "Password" %>
+          </div>
+          <%= f.submit "Login", class: "btn btn-lg btn-primary btn-block" %>
+        <% end %>
+      </div> <!-- .card -->
+    </div> <!-- ./col -->
+  </div> <!-- .row -->
 </div>

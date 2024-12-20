@@ -10,17 +10,5 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require fontawesome-free/css/all.min
- *= require asset_baru/css/simplebar.css
- *= require asset_baru/css/feather.css
- *= require asset_baru/css/daterangepicker.css
- *= require css/components.css
- *= require datatables/dataTables.bootstrap4.min
- *= require select2
- *= require toastr
- * require_tree .
- * require_self
+ *= require asset_baru/css/app-dark.css
  */
-.table thead tr th {
-    color: black;
-}

@@ -14,13 +14,13 @@
             <%= select_tag :pilihan, options_for_select(["Data Inventory","Data Item"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
           <% end %>
         </div>
-        <button type="submit" class="btn btn-info">Pilih</button>
+        <button type="submit" class="btn btn-primary">Pilih</button>
       </div>
     </div>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card mt-4">
   <% if flash[:alert] %>
     <div class="alert alert-success alert-dismissible show fade">
       <div class="alert-body">

@@ -1,5 +1,5 @@
 //= require js/app.min.js
-     
+
 //= require js/scripts.js
 //= require js/custom.js
 
@@ -13,20 +13,28 @@
 //= require bundles/datatables/export-tables/buttons.print.min.js
 //= require js/page/datatables.js
 //= require bundles/prism/prism.js
+//= require asset_baru/js/popper.min.js
+//= require asset_baru/js/moment.min.js
+//= require asset_baru/js/simplebar.min.js
+//= require asset_baru/js/daterangepicker.js
+//= require asset_baru/js/jquery.stickOnScroll.js
+//= require asset_baru/js/tinycolor-min.js
+//= require asset_baru/js/config.js
+//= require asset_baru/js/apps.js
 
-$(document).ready(function(){
+$(document).ready(function () {
     $(".modal-backdrop").remove();
-    $(window).keydown(function(event){
-        if(event.keyCode == 13) {
-          event.preventDefault();
-          return false;
+    $(window).keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            return false;
         }
     });
 });
-$(document).on('click','#close-modal',function(){
+$(document).on('click', '#close-modal', function () {
     $(".modal").hide();
     $(".modal-backdrop").remove();
-    $('.modal').modal( 'hide' ).data( 'bs.modal', null );
+    $('.modal').modal('hide').data('bs.modal', null);
 });
 
 $("#dataTable_role").dataTable();
