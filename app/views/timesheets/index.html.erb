@@ -9,3 +9,528 @@
     <% end %>
   <% end %>
 <% end %>
+
+<div class="row justify-content-center">
+  <div class="col-12">
+      <div class="row align-items-center my-3">
+          <div class="col">
+          <h2 class="page-title">Weekly Timesheet</h2>
+          </div>
+          <div class="col-auto d-none d-lg-flex">
+              <a href="timesheet-week50.html" class="btn bg-white" style="box-shadow: 6px 8px 9px rgba(203, 216, 227, 0.5);"><span class="fe fe-chevron-left fe-16"><span></a>     
+              <input class="form-control border rounded mr-2 ml-2" style="box-shadow: 6px 8px 9px rgba(203, 216, 227, 0.5);" id="example-week" type="week" name="week">           
+              <a href="timesheet-week52.html" class="btn bg-white" style="box-shadow: 6px 8px 9px rgba(203, 216, 227, 0.5);"><span class="fe fe-chevron-right fe-16"><span></a>
+          </div>
+      </div>
+      <div id='calendar'></div>
+      <div class="row">
+          <div class="col-md-12">
+          <!-- table -->
+            <style>
+            .table-container {
+              display: flex;
+              overflow-x: hidden; /* Mengizinkan scroll horizontal */
+              border: 1px solid #ccc;
+            }
+            .frozen-column {
+              min-width: 150px; /* Lebar kolom pertama */
+              position: sticky;
+              left: 0;
+              z-index: 2;
+              border-right: 1px solid #ddd;
+            }
+            th, td {
+              text-align: left;
+              border: 1px solid #ddd;
+              background-color: #ffffff; 
+            }
+            th {
+                background-color: #f8f9fa;
+            }
+            .days-column {
+                min-width: 75px; /* Lebar per kolom bulan */
+              }
+            </style>
+            <style>
+            .tooltip {
+              position: relative;
+              display: inline-block;
+              border-bottom: 1px dotted black;
+            }
+
+            .tooltip .tooltiptext {
+              visibility: hidden;
+              width: 120px;
+              background-color: #555;
+              color: #fff;
+              text-align: center;
+              border-radius: 6px;
+              padding: 5px 0;
+              position: absolute;
+              z-index: 1;
+              bottom: 125%;
+              left: 50%;
+              margin-left: -60px;
+              opacity: 0;
+              transition: opacity 0.3s;
+            }
+
+            .tooltip .tooltiptext::after {
+              content: "";
+              position: absolute;
+              top: 100%;
+              left: 50%;
+              margin-left: -5px;
+              border-width: 5px;
+              border-style: solid;
+              border-color: #555 transparent transparent transparent;
+            }
+
+            .tooltip:hover .tooltiptext {
+              visibility: visible;
+              opacity: 1;
+            }
+            </style>
+          <table class="table table-borderless table-striped">
+              <thead>
+              <tr>
+                  <th class="text-right"><button type="button" class="btn mb-2 btn-light btn-sm mt-3"><span class="fe fe-plus-circle fe-16 text-primary"><span></button></th>
+                  <th>Project</th>
+                  <th></th>
+                  <th class="frozen-column w-25">Activity</th>
+                  <th class="days-column">Mon <br> Des 16</th>
+                  <th class="days-column">Tue <br> Des 17</th>
+                  <th class="days-column">Wed <br> Des 18</th>
+                  <th class="days-column">Thu <br> Des 19</th>
+                  <th class="days-column">Fri <br> Des 20</th>
+                  <th class="days-column">Sat <br> Des 21</th>
+                  <th class="days-column">Sun <br> Des 22</th>
+                  <th>Week Hrs</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td><a class="ml-2 close" href=""><span class="fe fe-x-circle fe-16 mr-2"></span></a></td>
+                  <td class="text-center fe-12" colspan="2">
+                    <select class="form-control form-control-sm select2 bg-transparent border-0 text-center proyek" title="Judul Popover">
+                      <%# <optgroup label="Select Project"> %>
+                        <option value="" >Select Project</option>
+                      <%# </optgroup> %>
+                    </select>
+                  </td>
+                  <td class="frozen-column" scope="col">
+                    <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 aktifitas' type='search' style="width: 100%;">
+                      <%# <optgroup label="Select Project"> %>
+                        <option value="" >Select Activity</option>
+                      <%# </optgroup> %>
+                    </select>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <th class="text-muted">00h:00m</th>
+              </tr>
+              <tr>
+                  <td><a class="ml-2 close" href=""><span class="fe fe-x-circle fe-16 mr-2"></span></a></td>
+                  <td class="text-center fe-12" colspan="2" >
+                    <select class="form-control form-control-sm select2 bg-transparent border-0 text-center" title="Judul Popover">
+                      <optgroup label="Select Project">
+                        <option value="" >Select Project</option>
+                        <option>NK-P-23705</option>
+                        <option>NK-P-23704</option>
+                        <option>NK-P-23601 SPK I</option>
+                        <option>NK-P-23805</option>
+                      </optgroup>
+                      </optgroup>
+                    </select>
+                  </td>
+                  <td class="frozen-column" scope="col">
+                      <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 ' type='search' style="width: max-content;">
+                      <optgroup label="Select Project">
+                        <option value="" >Select Activity</option>
+                        <option>IT - Network monitoring and troubleshoot</option>
+                        <option>IT - Network monitoring and troubleshoot</option>
+                        <option>IT - Network monitoring and troubleshoot</option>
+                        <option>IT - Network monitoring and troubleshoot</option>
+                      </optgroup>
+                      </optgroup>
+                    </select>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <td class="text-center"> 
+                    <input
+                      data-bs-toggle="popover"
+                      data-bs-placement="top"
+                      data-bs-html="true"
+                      data-bs-offset="0,14"
+                      title="Notes" 
+                      data-content="
+                      <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
+                      class="form-control form-control-sm text-center" 
+                      type="text" value="00:00" 
+                      pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
+                  </td>
+                  <th class="text-muted">00h:00m</th>
+              </tr>
+              </tbody>
+              <thead>
+              <tr>
+                  <th colspan="3">
+                    <div class="d-flex justify-content-between">
+                      <button type="button" class="btn mb-2 btn-success text-white ml-2 mr-2" style="width: 75px;box-shadow: 6px 8px 9px rgba(203, 216, 227, 0.5);">Save</button>
+                      <button type="button" class="btn mb-2 btn-secondary text-white ml-2 mr-2" style="width: 95px; box-shadow: 6px 8px 9px rgba(203, 216, 227, 0.5);"><span class="fe fe-check fe-22 mr-2"></span>submit</button>
+                    </div>
+                  </th>
+                  <th class="frozen-column"></th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th class="days-column">00h:00m</th>
+                  <th>00h:00m</th>
+              </tr>
+              </thead>
+          </table>
+          </div> <!-- .col -->
+      </div> <!-- .row -->
+  </div>
+  <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="list-group list-group-flush my-n3">
+            <div class="list-group-item bg-transparent">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="fe fe-box fe-24"></span>
+                </div>
+                <div class="col">
+                  <small><strong>Package has uploaded successfull</strong></small>
+                  <div class="my-0 text-muted small">Package is zipped and uploaded</div>
+                  <small class="badge badge-pill badge-light text-muted">1m ago</small>
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item bg-transparent">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="fe fe-download fe-24"></span>
+                </div>
+                <div class="col">
+                  <small><strong>Widgets are updated successfull</strong></small>
+                  <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
+                  <small class="badge badge-pill badge-light text-muted">2m ago</small>
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item bg-transparent">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="fe fe-inbox fe-24"></span>
+                </div>
+                <div class="col">
+                  <small><strong>Notifications have been sent</strong></small>
+                  <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
+                  <small class="badge badge-pill badge-light text-muted">30m ago</small>
+                </div>
+              </div> <!-- / .row -->
+            </div>
+            <div class="list-group-item bg-transparent">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <span class="fe fe-link fe-24"></span>
+                </div>
+                <div class="col">
+                  <small><strong>Link was attached to menu</strong></small>
+                  <div class="my-0 text-muted small">New layout has been attached to the menu</div>
+                  <small class="badge badge-pill badge-light text-muted">1h ago</small>
+                </div>
+              </div>
+            </div> <!-- / .row -->
+          </div> <!-- / .list-group -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> <!-- .row -->
+
+   <script>
+      $(document).ready(function(){
+
+        $.ajax({
+          url: "/transaksi/timesheets/projects",
+          method: 'GET',
+          data : {
+            authenticity_token: '<%= form_authenticity_token %>',
+            id:1
+          },
+          success: function(data)
+          {
+            for (let i = 0; i < data['data'].length; i++) {
+              const element = data['data'][i];
+              $('.proyek').append(`
+                <option value="${element['id']}">${element['nama_proyek']}</option>
+              `);
+            }
+          }
+        });
+      });
+      $(document).on('change', '.proyek', function(){
+        var value = $(this).val();
+        $('.aktifitas').empty();
+        $.ajax({
+          url: "/transaksi/timesheets/activity-team-project",
+          method: 'GET',
+          data : {
+            authenticity_token: '<%= form_authenticity_token %>',
+            id:value
+          },
+          success: function(data)
+          {
+            for (let i = 0; i < data['data'].length; i++) {
+              const element = data['data'][i];
+              $('.aktifitas').append(`
+                <option value="${element['id']}">${element['nama_aktifitas']}</option>
+              `);
+            }
+          }
+        });
+      });
+
+      $('.select2').select2({
+        theme: 'bootstrap4'
+      })
+      $('.select2-multi').select2({
+        multiple: true,
+        theme: 'bootstrap4'
+      })
+      $('.drgpicker').daterangepicker({
+        singleDatePicker: true,
+        timePicker: false,
+        showDropdowns: true,
+        locale: {
+          format: 'MM/DD/YYYY'
+        }
+      })
+      $('.time-input').timepicker({
+        scrollDefault: 'now',
+        zindex: '9999' /* fix modal open */
+      })
+      /** date range picker */
+      if ($('.datetimes').length) {
+        $('.datetimes').daterangepicker({
+          timePicker: true,
+          startDate: moment().startOf('hour'),
+          endDate: moment().startOf('hour').add(32, 'hour'),
+          locale: {
+            format: 'M/DD hh:mm A'
+          }
+        })
+      }
+      var start = moment().subtract(29, 'days')
+      var end = moment()
+
+      function cb(start, end) {
+        $('#reportrange span').html(
+          start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY')
+        )
+      }
+      $('#reportrange').daterangepicker(
+        {
+          startDate: start,
+          endDate: end,
+          ranges: {
+            Today: [moment(), moment()],
+            Yesterday: [
+              moment().subtract(1, 'days'),
+              moment().subtract(1, 'days')
+            ],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [
+              moment().subtract(1, 'month').startOf('month'),
+              moment().subtract(1, 'month').endOf('month')
+            ]
+          }
+        },
+        cb
+      )
+      cb(start, end)
+    </script>

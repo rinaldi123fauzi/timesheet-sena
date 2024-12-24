@@ -21,6 +21,7 @@
 //= require asset_baru/js/tinycolor-min.js
 //= require asset_baru/js/config.js
 //= require asset_baru/js/apps.js
+//= require asset_baru/js/ui-popover.js
 
 $(document).ready(function () {
     $(".modal-backdrop").remove();

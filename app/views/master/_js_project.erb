@@ -1,11 +1,13 @@
 <script>
   $('#positions').select2();
   $('#disiplines').select2();
+  $('#kategori').select2();
   $(document).on('click','#simpanProyek',function(e){
     e.preventDefault();
     var namaProyek = $('#nama_proyek').val();
     var posisi = $('#positions').val();
     var disiplin = $('#disiplines').val();
+    var kategori = $('#kategori').val();
     var id_proyek = $('#id_proyek').val();
     $('#simpanProyek').text('Loading...');
     if (id_proyek == "") {
@@ -16,6 +18,7 @@
           authenticity_token: '<%= form_authenticity_token %>',
           nama_proyek:namaProyek,
           posisi:posisi,
+          kategori:kategori,
           disiplin:disiplin
         },
         success: function(data)
@@ -34,6 +37,7 @@
           nama_proyek:namaProyek,
           posisi:posisi,
           disiplin:disiplin,
+          kategori:kategori,
           id_proyek:id_proyek
         },
         success: function(data)
@@ -55,6 +59,7 @@
     $('#nama_proyek').empty();
     $('#positions').empty();
     $('#disiplines').empty();
+    $('#kategori').empty();
     $('.modal-title').text('Ubah Data');
     $.ajax({
       url: "/transaksi/projects/detail",
@@ -89,6 +94,17 @@
               <option value="${element['id']}">${element['nama_disiplin']}</option>
             `);
           }
+        }
+        if (data['data']['kategori'] == "Departemen") {
+          $('#kategori').append(`
+            <option value="Departemen" selected>Departemen</option>
+            <option value="Proyek">Proyek</option>
+          `);
+        }else{
+          $('#kategori').append(`
+            <option value="Departemen">Departemen</option>
+            <option value="Proyek" selected>Proyek</option>
+          `);
         }
       }
     });
@@ -135,6 +151,10 @@
         }
       }
     });
+    $('#kategori').append(`
+      <option value="Departemen">Departemen</option>
+      <option value="Proyek">Proyek</option>
+    `);
   });
 
   $(document).on('click','#hapusProyek',function(e){

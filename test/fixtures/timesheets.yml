@@ -15,6 +15,7 @@
 #  updated_at      :datetime         not null
 #  tanggal         :date
 #  parent_id       :integer
+#  project_id      :bigint           not null
 #
 
 one:

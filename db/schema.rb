@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_17_083851) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_24_070848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -156,6 +156,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_17_083851) do
     t.string "tipe_proyek"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "kategori"
     t.index ["disipline_id"], name: "index_projects_on_disipline_id"
     t.index ["position_id"], name: "index_projects_on_position_id"
   end
@@ -200,7 +201,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_17_083851) do
     t.datetime "updated_at", null: false
     t.date "tanggal"
     t.integer "parent_id"
+    t.bigint "project_id", null: false
     t.index ["activity_id"], name: "index_timesheets_on_activity_id"
+    t.index ["project_id"], name: "index_timesheets_on_project_id"
     t.index ["team_project_id"], name: "index_timesheets_on_team_project_id"
     t.index ["user_id"], name: "index_timesheets_on_user_id"
   end
@@ -246,6 +249,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_17_083851) do
   add_foreign_key "team_projects", "projects"
   add_foreign_key "team_projects", "users"
   add_foreign_key "timesheets", "activities"
+  add_foreign_key "timesheets", "projects"
   add_foreign_key "timesheets", "team_projects"
   add_foreign_key "timesheets", "users"
 end

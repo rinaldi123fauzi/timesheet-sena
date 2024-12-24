@@ -81,6 +81,14 @@ Rails.application.routes.draw do
       delete 'delete' => 'departments#delete'
     end
 
+    scope :activities do
+      get 'detail' => 'activities#detail'
+      get 'disiplines' => 'activities#disiplines'
+      post 'create' => 'activities#create'
+      put 'update' => 'activities#update'
+      delete 'delete' => 'activities#delete'
+    end
+
     scope :disiplines do
       get 'detail' => 'disiplines#detail'
       get 'divisions' => 'disiplines#divisions'
@@ -105,6 +113,15 @@ Rails.application.routes.draw do
       post 'create' => 'projects#create'
       put 'update' => 'projects#update'
       delete 'delete' => 'projects#delete'
+    end
+
+    scope :timesheets do
+      get 'detail' => 'timesheets#detail'
+      get 'projects' => 'timesheets#projects'
+      get 'activity-team-project' => 'timesheets#activitiesTeamProject'
+      post 'create' => 'timesheets#create'
+      put 'update' => 'timesheets#update'
+      delete 'delete' => 'timesheets#delete'
     end
 
     scope :team_projects do

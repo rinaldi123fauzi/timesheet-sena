@@ -9,7 +9,7 @@
         <div class="col-sm-4">
           <%= form_tag master_index_path, method: "GET" %>
           <% if current_user.roles.any? { |r| r.name == 'superadmin'} %>
-            <%= select_tag :pilihan, options_for_select(["Divisi","Departemen","Disiplin","Posisi","Proyek","Tim Proyek","Data Role","Data User"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
+            <%= select_tag :pilihan, options_for_select(["Divisi","Departemen","Disiplin","Posisi","Proyek","Tim Proyek","Aktifitas","Data Role","Data User"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
           <% else %>
             <%= select_tag :pilihan, options_for_select(["Data Inventory","Data Item"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
           <% end %>
@@ -486,6 +486,87 @@
       </div>
     <% end %>
 
+    <% if params[:pilihan] == "Aktifitas" %>
+      <div class="modal fade" id="aktifitas" role="dialog" aria-labelledby="formModal"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formModal"></h5>
+              <button type="button" class="close" id="close-modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <input type="hidden" id="id_aktifitas">
+                <div class="form-group">
+                  <label>Nama Aktifitas</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="nama_aktifitas">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Disiplin</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="disiplin" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanAktifitas">Simpan</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-header mt-2">
+        <h4>Data Aktifitas</h4>
+        <div class="card-header-form">
+              <%# if current_user.can? { |permissions| permissions.category.create? } %>
+            <div class="align-items-center">
+              <%# <%= link_to "+ Data Kategori", new_employee_path, class: "btn btn-primary btn-sm" %>
+              <button type="button" class="btn btn-primary btn-sm tambah-aktifitas" data-backdrop="true" data-toggle="modal" data-target="#aktifitas">+Tambah</button>
+            </div>
+          <%# end %>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable_kategori" width="100%" cellspacing="0" id="table-1">
+            <thead>
+              <tr>
+                <th style="width: 50px;" class="text-center">No</th>
+                <th>Nama Aktifitas</th>
+                <th>Nama Disiplin</th>
+                <th style="width: 150px;" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @activities.each_with_index do |activity, index| %>
+              <tr>
+                <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= activity.nama_aktifitas %></td>
+                <td><%= activity.disipline.nama_disiplin %></td>
+                <td style="width: 150px;" class="text-center">
+                  <%# if current_user.can? { |permissions| permissions.category.update? } %>
+                  <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahAktifitas" data-toggle="modal" data-target="#aktifitas" data-id="<%= activity.id %>">
+                      <i class="fas fa-pencil-alt"></i>
+                  </a>
+                  <%# end %>
+                  <%# if current_user.can? { |permissions| permissions.category.destroy? } %>
+                  <a href="#" class="btn btn-danger btn-circle btn-sm" id="hapusAktifitas" data-id="<%= activity.id %>" data-confirm="Are you sure?">
+                      <i class="fas fa-trash-alt"></i>
+                  </a>
+                  <%# end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
     <% if params[:pilihan] == "Posisi" %>
       <div class="modal fade" id="posisi" role="dialog" aria-labelledby="formModal"
         aria-hidden="true">
@@ -688,6 +769,12 @@
                     <select class="form-control select2" id="disiplines" style="width: 100%;"></select>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label>Kategori</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="kategori" style="width: 100%;"></select>
+                  </div>
+                </div>
                 <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanProyek">Simpan</button>
               </form>
             </div>
@@ -715,6 +802,7 @@
                 <th>Nama Proyek</th>
                 <th>Nama Posisi</th>
                 <th>Nama Disiplin</th>
+                <th>Kategori</th>
                 <th style="width: 150px;" class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -725,6 +813,7 @@
                 <td><%= project.nama_proyek %></td>
                 <td><%= project.position.nama_posisi %></td>
                 <td><%= project.disipline.nama_disiplin %></td>
+                <td><%= project.kategori %></td>
                 <td style="width: 150px;" class="text-center">
                   <%# if current_user.can? { |permissions| permissions.category.update? } %>
                   <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahProyek" data-toggle="modal" data-target="#proyek" data-id="<%= project.id %>">
@@ -1167,13 +1256,20 @@
 </div>
 
 
-<%= render "js_inventory" %>
-<%= render "js_item" %>
-<%= render "js_divisi" %>
-<%= render "js_department" %>
-<%= render "js_position" %>
-<%= render "js_project" %>
-<%= render "js_team_project" %>
-<%= render "js_disiplin" %>
-<%= render "js_karyawan" %>
-<%= render "js_user" %>
+<% if params[:pilihan] == "Divisi" %>
+  <%= render "js_divisi" %>
+<% elsif params[:pilihan] == "Aktifitas" %>
+  <%= render "js_activities" %>
+<% elsif params[:pilihan] == "Departemen" %>
+  <%= render "js_department" %>
+<% elsif params[:pilihan] == "Posisi" %>
+  <%= render "js_position" %>
+<% elsif params[:pilihan] == "Proyek" %>
+  <%= render "js_project" %>
+<% elsif params[:pilihan] == "Tim Proyek" %>
+  <%= render "js_team_project" %>
+<% elsif params[:pilihan] == "Disiplin" %>
+  <%= render "js_disiplin" %>
+<% elsif params[:pilihan] == "User" %>
+  <%= render "js_user" %>
+<% end %>

@@ -11,4 +11,5 @@
 #
 class Activity < ApplicationRecord
   belongs_to :disipline
+  has_many :timesheet
 end

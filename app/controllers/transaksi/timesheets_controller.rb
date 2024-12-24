@@ -1,4 +1,4 @@
-class Transaksi::ProjectsController < ApplicationController
+class Transaksi::TimesheetsController < ApplicationController
   def create
     begin
       ActiveRecord::Base.transaction do
@@ -7,7 +7,6 @@ class Transaksi::ProjectsController < ApplicationController
           proyek.nama_proyek = params[:nama_proyek]
           proyek.position_id = params[:posisi]
           proyek.disipline_id = params[:disiplin]
-          proyek.kategori = params[:kategori]
           if proyek.save
             render json:{
               status: 200
@@ -34,7 +33,6 @@ class Transaksi::ProjectsController < ApplicationController
         proyek.nama_proyek = params[:nama_proyek]
         proyek.position_id = params[:posisi]
         proyek.disipline_id = params[:disiplin]
-        proyek.kategori = params[:kategori]
         if proyek.save
           render json: { 
             status: 200
@@ -78,19 +76,22 @@ class Transaksi::ProjectsController < ApplicationController
     }, status: 200
   end
 
-  def positions
-    @data = Position.order(:nama_posisi => :asc)
+  def projects
+    @data = Project.order(:nama_proyek => :asc)
     render json:{
       status: 200,
       data: @data
     }, status: 200
   end
 
-  def disiplines
-    @data = Disipline.order(:nama_disiplin => :asc)
+  def activitiesTeamProject
+    getDisiplin = Project.find(params[:id])
+    @data = Activity.where('disipline_id = ?', getDisiplin.disipline_id).order(:nama_aktifitas => :asc) 
+    @teamProject = TeamProject.find_by_project_id(params[:id])
     render json:{
       status: 200,
-      data: @data
+      data: @data,
+      team_projects: @teamProject
     }, status: 200
   end
 end

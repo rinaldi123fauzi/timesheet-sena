@@ -1,14 +1,12 @@
-class Transaksi::ProjectsController < ApplicationController
+class Transaksi::ActivitiesController < ApplicationController
   def create
     begin
       ActiveRecord::Base.transaction do
-        Project.transaction do
-          proyek = Project.new
-          proyek.nama_proyek = params[:nama_proyek]
-          proyek.position_id = params[:posisi]
-          proyek.disipline_id = params[:disiplin]
-          proyek.kategori = params[:kategori]
-          if proyek.save
+        Activity.transaction do
+          activity = Activity.new
+          activity.nama_aktifitas = params[:nama_aktifitas]
+          activity.disipline_id = params[:disiplin]
+          if activity.save
             render json:{
               status: 200
             }
@@ -16,9 +14,9 @@ class Transaksi::ProjectsController < ApplicationController
           else
             render json:{
               status: 500,
-              msg: proyek.errors
+              msg: activity.errors
             }
-            txError(proyek.errors.to_json)
+            txError(activity.errors.to_json)
           end
         end
       end
@@ -30,12 +28,10 @@ class Transaksi::ProjectsController < ApplicationController
   def update
     begin
       ActiveRecord::Base.transaction do
-        proyek = Project.find_by_id(params[:id_proyek])
-        proyek.nama_proyek = params[:nama_proyek]
-        proyek.position_id = params[:posisi]
-        proyek.disipline_id = params[:disiplin]
-        proyek.kategori = params[:kategori]
-        if proyek.save
+        activity = Activity.find_by_id(params[:id_aktifitas])
+        activity.nama_aktifitas = params[:nama_aktifitas]
+        activity.disipline_id = params[:disiplin]
+        if activity.save
           render json: { 
             status: 200
           }
@@ -43,9 +39,9 @@ class Transaksi::ProjectsController < ApplicationController
         else
           render json: { 
             status: 500,
-            msg: proyek.errors
+            msg: activity.errors
           }
-          txError(proyek.errors.to_json)
+          txError(activity.errors.to_json)
         end
       end
     rescue StandardError => e
@@ -54,7 +50,7 @@ class Transaksi::ProjectsController < ApplicationController
   end 
 
   def delete
-    @data = Project.find(params[:id]).destroy
+    @data = Activity.find(params[:id]).destroy
     if (@data)
       render json: {
           success: true,
@@ -67,22 +63,12 @@ class Transaksi::ProjectsController < ApplicationController
   end
 
   def detail
-    @data = Project.find(params[:id])
-    @positions = Position.all
-    @disiplines = Disipline.all
+    @data = Activity.find(params[:id])
+    @disipline = Disipline.all
     render json:{
       status: 200,
       data: @data,
-      positions: @positions,
-      disiplines: @disiplines
-    }, status: 200
-  end
-
-  def positions
-    @data = Position.order(:nama_posisi => :asc)
-    render json:{
-      status: 200,
-      data: @data
+      disiplin: @disipline
     }, status: 200
   end
 

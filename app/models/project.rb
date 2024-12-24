@@ -9,8 +9,10 @@
 #  tipe_proyek  :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  kategori     :string
 #
 class Project < ApplicationRecord
   belongs_to :position
   belongs_to :disipline 
+  has_many :timesheet
 end
