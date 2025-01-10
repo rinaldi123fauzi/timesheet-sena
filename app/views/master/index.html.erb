@@ -9,7 +9,7 @@
         <div class="col-sm-4">
           <%= form_tag master_index_path, method: "GET" %>
           <% if current_user.roles.any? { |r| r.name == 'superadmin'} %>
-            <%= select_tag :pilihan, options_for_select(["Divisi","Departemen","Disiplin","Posisi","Proyek","Tim Proyek","Aktifitas","Data Role","Data User"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
+            <%= select_tag :pilihan, options_for_select(["Divisi","Departemen","Disiplin","Proyek","Tim Proyek","Aktifitas","Data Role","Data User"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
           <% else %>
             <%= select_tag :pilihan, options_for_select(["Data Inventory","Data Item"], params[:pilihan]), prompt: "-- Pilih Data --", class: "form-control" %>
           <% end %>

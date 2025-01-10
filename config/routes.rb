@@ -118,6 +118,7 @@ Rails.application.routes.draw do
     scope :timesheets do
       get 'detail' => 'timesheets#detail'
       get 'projects' => 'timesheets#projects'
+      get 'tanggal' => 'timesheets#tanggal'
       get 'activity-team-project' => 'timesheets#activitiesTeamProject'
       post 'create' => 'timesheets#create'
       put 'update' => 'timesheets#update'
