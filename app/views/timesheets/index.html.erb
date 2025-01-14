@@ -179,54 +179,58 @@
               transform: scale(0.95); /* Efek klik */
             }
             </style>
-          <table class="table table-borderless table-striped" id="timesheets">
-              <thead>
-              <tr>
-                  <th class="text-right"><button type="button" class="btn mb-2 btn-light btn-sm mt-3 tambah-timesheet"><span class="fe fe-plus-circle fe-16 text-primary"><span></button></th>
-                  <th>Project</th>
-                  <th></th>
-                  <th class="frozen-column w-25">Activity</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                  <td></td>
-                  <td class="frozen-column fe-12" colspan="2">
-                    <select class="form-control form-control-sm select2 bg-transparent border-0 text-center proyek" title="Judul Popover">
-                      <%# <optgroup label="Select Project"> %>
-                        <option value="" >Select Project</option>
-                      <%# </optgroup> %>
-                    </select>
-                  </td>
-                  <td class="frozen-column" scope="col">
-                    <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 aktifitas' type='search' style="width: 100%;">
-                      <%# <optgroup label="Select Project"> %>
-                        <option value="" >Select Activity</option>
-                      <%# </optgroup> %>
-                    </select>
-                  </td>
-              </tr>
-              </tbody>
-              <thead>
-              <tr>
-                  <th colspan="3">
-                    <div class="d-flex justify-content-between">
-                      <button type="button" class="btn mb-2 btn-success text-white ml-2 mr-2">Save as Draft</button>
-                      <button type="button" class="btn mb-2 btn-secondary text-white ml-2 mr-2"><span class="fe fe-check fe-22 mr-2"></span>Submit</button>
-                    </div>
-                  </th>
-                  <th class="frozen-column"></th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <th class="days-column">00h:00m</th>
-                  <%# <th>00h:00m</th> %>
-              </tr>
-              </thead>
-          </table>
+            <form class="form-timesheets">
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+              <table class="table table-borderless table-striped" id="timesheets">
+                  <thead>
+                  <tr>
+                      <th class="text-right"><button type="button" class="btn mb-2 btn-light btn-sm mt-3 tambah-timesheet"><span class="fe fe-plus-circle fe-16 text-primary"><span></button></th>
+                      <th>Project</th>
+                      <th></th>
+                      <th class="frozen-column w-25">Activity</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                      <td></td>
+                      <td class="frozen-column fe-12" colspan="2">
+                      <input type="hidden" value="<%= rand(100000..999999) %>" id="parent-id">
+                        <select class="form-control form-control-sm select2 bg-transparent border-0 text-center proyek" id="proyek" title="Judul Popover">
+                          <%# <optgroup label="Select Project"> %>
+                            <option value="" >Select Project</option>
+                          <%# </optgroup> %>
+                        </select>
+                      </td>
+                      <td class="frozen-column" scope="col">
+                        <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 aktifitas' id="aktifitas" type='search' style="width: 100%;">
+                          <%# <optgroup label="Select Project"> %>
+                            <option value="" >Select Activity</option>
+                          <%# </optgroup> %>
+                        </select>
+                      </td>
+                  </tr>
+                  </tbody>
+                  <thead>
+                  <tr>
+                      <th colspan="3">
+                        <div class="d-flex justify-content-between">
+                          <button type="button" class="btn mb-2 btn-success text-white ml-2 mr-2" id="simpanTimesheets">Save as Draft</button>
+                          <button type="button" class="btn mb-2 btn-secondary text-white ml-2 mr-2"><span class="fe fe-check fe-22 mr-2"></span>Submit</button>
+                        </div>
+                      </th>
+                      <th class="frozen-column"></th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <th class="days-column">00h:00m</th>
+                      <%# <th>00h:00m</th> %>
+                  </tr>
+                  </thead>
+              </table>
+            </form>
           </div> <!-- .col -->
       </div> <!-- .row -->
   </div>
@@ -301,6 +305,36 @@
 
    <script>
 
+    const btn_simpan_timesheets = document.querySelector('#simpanTimesheets');
+    const form_sertification = document.querySelector('.form-timesheets');
+
+    btn_simpan_timesheets.addEventListener('click', (e) => {
+      e.preventDefault();
+      $('#simpanTimesheets').text('Loading...');
+      const formData = new FormData(form_sertification);
+      let xhr = new XMLHttpRequest();  
+      xhr.open("POST", "/transaksi/timesheets/create", true);
+      xhr.send(formData);
+      xhr.addEventListener("load", function(e){
+        let result = JSON.parse(xhr.response);
+        if (result['status'] == 200) {
+          // Swal.fire(
+          //   'Success',
+          //   `${result['msg']}`,
+          //   'success'
+          // )
+          window.location.href = "/timesheets";
+        }else if(result['status'] == 500){
+          // Swal.fire(
+          //   'Fail',
+          //   `${result['msg']}`,
+          //   'error'
+          // )
+          $('#simpanTimesheets').text('Simpan');
+        }
+      });
+    });
+
    function addRow() {
             const table = document.getElementById('dynamicTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
@@ -350,8 +384,10 @@
             bodyCount = 5;
         }
 
+      // ubah tanggal timesheet
       $(document).on('change', '.tanggal-timesheets', function(){
         var value = $(this).val();
+        var parent_id = $('#parent-id').val();
         if (headerCount > 11 && bodyCount > 11) {
           removeHeader();
         }
@@ -392,9 +428,13 @@
                       data-content="
                       <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
                       class="form-control form-control-sm text-center" 
-                      type="time" value="00:00" 
+                      type="time" value="00:00" name="man_hours[]"
                       pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
-                      <input type="hidden" class="comment-`+element['tanggal_asli']+`">
+                      <input type="hidden" class="parent-id" name="parent_id[]" value="${parent_id}">
+                      <input type="hidden" class="project-id" name="project_id[]">
+                      <input type="hidden" class="activity-id" name="activity_id[]">
+                      <input type="hidden" name="tanggal[]" value="${element['tanggal_asli']}">
+                      <input type="hidden" class="comment-`+element['tanggal_asli']+`" name="deskripsi[]">
                       <div class="text-center">
                         <button type="button" class="info-button" data-id=`+element['tanggal_asli']+` data-backdrop="true" data-toggle="modal" data-target="#comment">
                           <i class="fas fa-info-circle"></i>
@@ -408,6 +448,7 @@
       });
 
       $(document).ready(function(){
+        var parent_id = $('#parent-id').val();
 
         $.ajax({
           url: "/transaksi/timesheets/projects",
@@ -467,9 +508,13 @@
                       data-content="
                       <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
                       class="form-control form-control-sm text-center" 
-                      type="time" value="00:00" 
+                      type="time" value="00:00" name="man_hours[]"
                       pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
-                      <input type="hidden" class="comment-`+element['tanggal_asli']+`">
+                      <input type="hidden" class="parent-id" name="parent_id[]" value="${parent_id}">
+                      <input type="hidden" class="project-id" name="project_id[]">
+                      <input type="hidden" class="activity-id" name="activity_id[]">
+                      <input type="hidden" name="tanggal[]" value="${element['tanggal_asli']}">
+                      <input type="hidden" class="comment-`+element['tanggal_asli']+`" name="deskripsi[]">
                       <div class="text-center">
                         <button type="button" class="info-button" data-id=`+element['tanggal_asli']+`  data-backdrop="true" data-toggle="modal" data-target="#comment">
                           <i class="fas fa-info-circle"></i>
@@ -482,9 +527,11 @@
         });
       });
 
+    // tambah row timesheet
       var id = 1;
       $(document).on('click', '.tambah-timesheet', function(){
         id++;
+        var parent_id = Math.floor(Math.random() * 1000000);
         $(`.proyek-${id}`).empty();
         $(`.aktifitas-${id}`).empty();
         const table = document.getElementById('timesheets').getElementsByTagName('tbody')[0];
@@ -497,7 +544,8 @@
 
         cell1.innerHTML = '<a class="ml-2 close" onclick="deleteRow(this)" style="cursor: pointer; color: black;"><span class="fe fe-x-circle fe-16 mr-2"></span></a>';
         cell2.innerHTML = `
-          <select class="form-control form-control-sm select2 bg-transparent border-0 text-center proyek-`+id+`" data-id="${id}" title="Judul Popover">
+          <input type="hidden" name="parent_id[]" value="${parent_id}">
+          <select class="form-control form-control-sm select2 bg-transparent border-0 text-center proyek-`+id+`" id="proyek-`+parent_id+`" data-id="${id}" title="Judul Popover">
             <%# <optgroup label="Select Project"> %>
               <option value="" >Select Project</option>
             <%# </optgroup> %>
@@ -505,7 +553,7 @@
         `;
         cell3.innerHTML = '';
         cell4.innerHTML = `
-          <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 aktifitas-`+id+`' data-id="${id}" type='search' style="width: 100%;">
+          <select class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted select2 aktifitas-`+id+`' id="aktifitas-`+parent_id+`" data-id="${id}" type='search' style="width: 100%;">
             <%# <optgroup label="Select Project"> %>
               <option value="" >Select Activity</option>
             <%# </optgroup> %>
@@ -537,9 +585,13 @@
                       data-content="
                       <input class='form-control form-control-sm mr-sm-2 bg-transparent border-0 text-muted' type='search' placeholder='Type something...'>"
                       class="form-control form-control-sm text-center" 
-                      type="time" value="00:00" 
+                      type="time" value="00:00" name="man_hours[]" 
                       pattern="^([0-9]{1,2}):([0-5][0-9])$" required>
-                      <input type="hidden" class="comment2-`+element['tanggal_asli']+`-`+no+`">
+                      <input type="hidden" class="parent-id" name="parent_id[]" value="${parent_id}">
+                      <input type="hidden" class="project-id-${parent_id}" name="project_id[]">
+                      <input type="hidden" class="activity-id-${parent_id}" name="activity_id[]">
+                      <input type="hidden" name="tanggal[]" value="${element['tanggal_asli']}">
+                      <input type="hidden" class="comment2-`+element['tanggal_asli']+`-`+no+`" name="deskripsi[]">
                       <div class="text-center">
                         <button type="button" class="info-button2" data-id=`+element['tanggal_asli']+` data-loop=`+no+` data-backdrop="true" data-toggle="modal" data-target="#comment2">
                           <i class="fas fa-info-circle"></i>
@@ -589,6 +641,22 @@
               }
             }
           });
+        });
+
+        $(`.proyek-${id}`).on('change', function(){
+          setTimeout(() => {
+            var proyek = $(`#proyek-${parent_id} option:selected`).val();
+            var aktifitas = $(`#aktifitas-${parent_id} option:selected`).val();
+            $(`.project-id-${parent_id}`).val(this.value);
+            $(`.activity-id-${parent_id}`).val(aktifitas);
+          }, 200);
+        });
+
+        $(`.aktifitas-${id}`).on('change', function(){
+          setTimeout(() => {
+            var aktifitas = $(`#aktifitas-${parent_id} option:selected`).val();
+            $(`.activity-id-${parent_id}`).val(aktifitas);
+          }, 200);
         });
       });
 
@@ -654,6 +722,22 @@
             }
           }
         });
+      });
+
+      $('.proyek').on('change', function(){
+        setTimeout(() => {
+          var proyek = $('#proyek option:selected').val();
+          var aktifitas = $('#aktifitas option:selected').val();
+          $('.project-id').val(this.value);
+          $('.activity-id').val(aktifitas);
+        }, 200);
+      });
+
+      $('.aktifitas').on('change', function(){
+        setTimeout(() => {
+          var aktifitas = $('#aktifitas option:selected').val();
+          $('.activity-id').val(aktifitas);
+        }, 200);
       });
 
       $('.select2').select2({

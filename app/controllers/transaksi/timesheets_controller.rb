@@ -54,29 +54,66 @@ class Transaksi::TimesheetsController < ApplicationController
   end
 
   def create
-    begin
-      ActiveRecord::Base.transaction do
-        Project.transaction do
-          proyek = Project.new
-          proyek.nama_proyek = params[:nama_proyek]
-          proyek.position_id = params[:posisi]
-          proyek.disipline_id = params[:disiplin]
-          if proyek.save
-            render json:{
-              status: 200
-            }
-            flash[:notice] = "Data berhasil disimpan"
-          else
-            render json:{
-              status: 500,
-              msg: proyek.errors
-            }
-            txError(proyek.errors.to_json)
-          end
-        end
+    arrayData = []
+    arrayStatus = []
+    params[:man_hours].each_with_index do |data, index|
+      tanggal = Time.zone.parse("#{params[:tanggal][index]}")
+      tanggal1 = tanggal.strftime('%Y-%m-%d')
+      bulan = tanggal.strftime('%-m')
+      numberWeek = Date.parse(tanggal1).cweek
+      @year = tanggal.strftime('%Y')
+      @this_week = tanggal.strftime("#{numberWeek}")
+
+      arrayData.push(
+        'parent_id' => params[:parent_id][index],
+        'project_id' => params[:project_id][index],
+        'activity_id' => params[:activity_id][index],
+        'deskripsi' => params[:deskripsi][index],
+        'tanggal' => params[:tanggal][index],
+        'week' => @this_week,
+        'bulan' => bulan,
+        'tahun' => @year,
+        'man_hours' => data
+      )
+    end
+
+    arrayData.each do |data|
+      time_current = Time.current
+      convert = Time.current.strftime('%Y-%m-%d ') + data['man_hours'] + ":00.000"
+      convert1 = Time.zone.parse("#{convert}")
+      manHours = (time_current - convert1) / 1.hours
+      timesheets = Timesheet.new
+      timesheets.user_id = current_user.id
+      timesheets.team_project_id = 3
+      timesheets.project_id = data['project_id']
+      timesheets.activity_id = data['activity_id']
+      timesheets.deskripsi = data['deskripsi']
+      timesheets.parent_id = data['parent_id']
+      timesheets.tanggal = data['tanggal']
+      timesheets.week = data['week']
+      timesheets.month = data['bulan']
+      timesheets.year = data['tahun']
+      timesheets.man_hours = manHours
+      if !timesheets.save
+        arrayStatus.push(500)
       end
-    rescue StandardError => e
-      txError(e)
+    end
+    
+    jsonStatus = JSON.parse(arrayStatus.to_s)
+    if jsonStatus[0] == 500
+      render json:{
+        status: 500,
+        data: arrayData,
+        msg: "Mohon form diisi seluruhnya"
+      }, status: 500
+    else
+      # if current_user
+      #   createActivity(current_user.email,"Update Data Education")
+      # end
+      render json:{
+        status: 200,
+        msg: "Data berhasil disimpan"
+      }, status: 200
     end
   end
 
