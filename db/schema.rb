@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_24_070848) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_14_041359) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -202,6 +202,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_24_070848) do
     t.date "tanggal"
     t.integer "parent_id"
     t.bigint "project_id", null: false
+    t.string "type_submit"
     t.index ["activity_id"], name: "index_timesheets_on_activity_id"
     t.index ["project_id"], name: "index_timesheets_on_project_id"
     t.index ["team_project_id"], name: "index_timesheets_on_team_project_id"

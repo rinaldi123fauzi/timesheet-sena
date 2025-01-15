@@ -53,6 +53,14 @@ class Transaksi::TimesheetsController < ApplicationController
     }, status: 200
   end
 
+  def listTimesheets
+    data = Timesheet.all
+    render json:{
+      status: 200,
+      data: data
+    }, status: 200
+  end
+
   def create
     arrayData = []
     arrayStatus = []
@@ -64,6 +72,21 @@ class Transaksi::TimesheetsController < ApplicationController
       @year = tanggal.strftime('%Y')
       @this_week = tanggal.strftime("#{numberWeek}")
 
+      time_current = Time.current
+      if data != "00:00"
+        convert = Time.current.strftime('%Y-%m-%d ') + data + ":00.000"
+        convert1 = Time.zone.parse("#{convert}")
+        hours = convert1.strftime("%H")
+        convertHours = hours.to_i
+        minutes = convert1.strftime("%M")
+        converMinutes = minutes.to_i
+        manMinutes = (convertHours * 60) + converMinutes
+        manHours = manMinutes.to_f / 60;
+      else
+        manHours = 0
+        manMinutes = 0
+      end
+
       arrayData.push(
         'parent_id' => params[:parent_id][index],
         'project_id' => params[:project_id][index],
@@ -73,15 +96,12 @@ class Transaksi::TimesheetsController < ApplicationController
         'week' => @this_week,
         'bulan' => bulan,
         'tahun' => @year,
-        'man_hours' => data
+        'tipe_submit' => params[:type_submit][index],
+        'man_hours' => manHours.to_f.round(2)
       )
     end
 
     arrayData.each do |data|
-      time_current = Time.current
-      convert = Time.current.strftime('%Y-%m-%d ') + data['man_hours'] + ":00.000"
-      convert1 = Time.zone.parse("#{convert}")
-      manHours = (time_current - convert1) / 1.hours
       timesheets = Timesheet.new
       timesheets.user_id = current_user.id
       timesheets.team_project_id = 3
@@ -93,7 +113,8 @@ class Transaksi::TimesheetsController < ApplicationController
       timesheets.week = data['week']
       timesheets.month = data['bulan']
       timesheets.year = data['tahun']
-      timesheets.man_hours = manHours
+      timesheets.type_submit = data['tipe_submit']
+      timesheets.man_hours = data['man_hours']
       if !timesheets.save
         arrayStatus.push(500)
       end

@@ -16,6 +16,7 @@
 #  tanggal         :date
 #  parent_id       :integer
 #  project_id      :bigint           not null
+#  type_submit     :string
 #
 require "test_helper"
 

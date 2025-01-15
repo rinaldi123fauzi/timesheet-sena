@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       get 'detail' => 'timesheets#detail'
       get 'projects' => 'timesheets#projects'
       get 'tanggal' => 'timesheets#tanggal'
+      get 'list-timesheet' => 'timesheets#listTimesheets'
       get 'activity-team-project' => 'timesheets#activitiesTeamProject'
       post 'create' => 'timesheets#create'
       put 'update' => 'timesheets#update'
