@@ -189,7 +189,7 @@ class Transaksi::TimesheetsController < ApplicationController
   end
 
   def projects
-    @data = Project.order(:nama_proyek => :asc)
+    @data = TeamProject.left_outer_joins(:project).select('DISTINCT ON(team_projects.project_id) projects.id, projects.nama_proyek').where('team_projects.user_id = ?', current_user.id).order('projects.nama_proyek ASC, projects.id ASC')
     render json:{
       status: 200,
       data: @data
@@ -197,8 +197,6 @@ class Transaksi::TimesheetsController < ApplicationController
   end
 
   def activitiesTeamProject
-    getDisiplin = Project.find(params[:id])
-    @data = Activity.where('disipline_id = ?', getDisiplin.disipline_id).order(:nama_aktifitas => :asc) 
     @teamProject = TeamProject.find_by_project_id(params[:id])
     render json:{
       status: 200,

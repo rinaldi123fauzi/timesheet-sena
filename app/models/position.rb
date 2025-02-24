@@ -10,4 +10,5 @@
 #
 class Position < ApplicationRecord
   belongs_to :disipline
+  has_many :team_project
 end

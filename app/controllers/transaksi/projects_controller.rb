@@ -4,10 +4,10 @@ class Transaksi::ProjectsController < ApplicationController
       ActiveRecord::Base.transaction do
         Project.transaction do
           proyek = Project.new
+          proyek.kode_proyek = params[:kode_proyek]
           proyek.nama_proyek = params[:nama_proyek]
-          proyek.position_id = params[:posisi]
-          proyek.disipline_id = params[:disiplin]
-          proyek.kategori = params[:kategori]
+          proyek.start_date = params[:start_date]
+          proyek.end_date = params[:end_date]
           if proyek.save
             render json:{
               status: 200
@@ -31,10 +31,10 @@ class Transaksi::ProjectsController < ApplicationController
     begin
       ActiveRecord::Base.transaction do
         proyek = Project.find_by_id(params[:id_proyek])
+        proyek.kode_proyek = params[:kode_proyek]
         proyek.nama_proyek = params[:nama_proyek]
-        proyek.position_id = params[:posisi]
-        proyek.disipline_id = params[:disiplin]
-        proyek.kategori = params[:kategori]
+        proyek.start_date = params[:start_date]
+        proyek.end_date = params[:end_date]
         if proyek.save
           render json: { 
             status: 200
@@ -68,26 +68,6 @@ class Transaksi::ProjectsController < ApplicationController
 
   def detail
     @data = Project.find(params[:id])
-    @positions = Position.all
-    @disiplines = Disipline.all
-    render json:{
-      status: 200,
-      data: @data,
-      positions: @positions,
-      disiplines: @disiplines
-    }, status: 200
-  end
-
-  def positions
-    @data = Position.order(:nama_posisi => :asc)
-    render json:{
-      status: 200,
-      data: @data
-    }, status: 200
-  end
-
-  def disiplines
-    @data = Disipline.order(:nama_disiplin => :asc)
     render json:{
       status: 200,
       data: @data

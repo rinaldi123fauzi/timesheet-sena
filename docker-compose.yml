@@ -16,7 +16,7 @@ services:
     volumes:
       - ".:/usr/src/app"
     ports:
-      - "4321:3000"
+      - "${APP_PORT}:3000"
     # depends_on:
     #   - thedatabase
 
@@ -28,7 +28,7 @@ services:
     # volumes:
     #   - ./redis:/var/lib/redis/data
     ports:
-      - '6379:6379'
+      - '${REDIS_PORT}:6379'
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s

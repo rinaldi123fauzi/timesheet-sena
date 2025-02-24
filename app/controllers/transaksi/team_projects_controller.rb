@@ -7,6 +7,9 @@ class Transaksi::TeamProjectsController < ApplicationController
           tim_proyek.user_id = params[:member]
           tim_proyek.project_id = params[:proyek]
           tim_proyek.pm = params[:pm]
+          tim_proyek.disipline_id = params[:disiplin] 
+          tim_proyek.position_id = params[:posisi]
+          tim_proyek.tipe_proyek = params[:tipe_proyek]
           if tim_proyek.save
             render json:{
               status: 200
@@ -33,6 +36,9 @@ class Transaksi::TeamProjectsController < ApplicationController
         tim_proyek.user_id = params[:member]
         tim_proyek.project_id = params[:proyek]
         tim_proyek.pm = params[:pm]
+        tim_proyek.disipline_id = params[:disiplin] 
+        tim_proyek.position_id = params[:posisi]
+        tim_proyek.tipe_proyek = params[:tipe_proyek]
         if tim_proyek.save
           render json: { 
             status: 200
@@ -68,11 +74,15 @@ class Transaksi::TeamProjectsController < ApplicationController
     @data = TeamProject.find(params[:id])
     @users = User.all
     @projects = Project.all
+    @disiplines = Disipline.all
+    @positions = Position.all
     render json:{
       status: 200,
       data: @data,
       users: @users,
-      projects: @projects
+      projects: @projects,
+      disiplines: @disiplines,
+      positions: @positions
     }, status: 200
   end
 
@@ -86,6 +96,22 @@ class Transaksi::TeamProjectsController < ApplicationController
 
   def projects
     @data = Project.order(:nama_proyek => :asc)
+    render json:{
+      status: 200,
+      data: @data
+    }, status: 200
+  end
+
+  def disiplines
+    @data = Disipline.order(:nama_disiplin => :asc)
+    render json:{
+      status: 200,
+      data: @data
+    }, status: 200
+  end
+
+  def positions
+    @data = Position.order(:nama_posisi => :asc)
     render json:{
       status: 200,
       data: @data

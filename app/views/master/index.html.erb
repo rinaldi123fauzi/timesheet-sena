@@ -752,27 +752,27 @@
               <form>
                 <input type="hidden" id="id_proyek">
                 <div class="form-group">
+                  <label>Kode Proyek</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="kode_proyek">
+                  </div>
+                </div>
+                <div class="form-group">
                   <label>Nama Proyek</label>
                   <div class="input-group">
                     <input type="text" class="form-control" id="nama_proyek">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Posisi</label>
+                  <label>Start Date</label>
                   <div class="input-group">
-                    <select class="form-control select2" id="positions" style="width: 100%;"></select>
+                    <input type="date" class="form-control" id="start-date">
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Disiplin</label>
+                  <label>End Date</label>
                   <div class="input-group">
-                    <select class="form-control select2" id="disiplines" style="width: 100%;"></select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Kategori</label>
-                  <div class="input-group">
-                    <select class="form-control select2" id="kategori" style="width: 100%;"></select>
+                    <input type="date" class="form-control" id="end-date">
                   </div>
                 </div>
                 <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanProyek">Simpan</button>
@@ -799,10 +799,10 @@
             <thead>
               <tr>
                 <th style="width: 50px;" class="text-center">No</th>
+                <th>Kode Proyek</th>
                 <th>Nama Proyek</th>
-                <th>Nama Posisi</th>
-                <th>Nama Disiplin</th>
-                <th>Kategori</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th style="width: 150px;" class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -810,10 +810,10 @@
               <% @projects.each_with_index do |project, index| %>
               <tr>
                 <td style="width: 50px;" class="text-center"><%= index+1 %></td>
+                <td><%= project.kode_proyek %></td>
                 <td><%= project.nama_proyek %></td>
-                <td><%= project.position.nama_posisi %></td>
-                <td><%= project.disipline.nama_disiplin %></td>
-                <td><%= project.kategori %></td>
+                <td><%= project.start_date %></td>
+                <td><%= project.end_date %></td>
                 <td style="width: 150px;" class="text-center">
                   <%# if current_user.can? { |permissions| permissions.category.update? } %>
                   <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahProyek" data-toggle="modal" data-target="#proyek" data-id="<%= project.id %>">
@@ -866,6 +866,24 @@
                     <select class="form-control select2" id="member" style="width: 100%;"></select>
                   </div>
                 </div>
+                <div class="form-group">
+                  <label>Disiplin</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="disiplin" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Posisi</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="posisi" style="width: 100%;"></select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Tipe Proyek</label>
+                  <div class="input-group">
+                    <select class="form-control select2" id="tipe-proyek" style="width: 100%;"></select>
+                  </div>
+                </div>
                 <button type="submit" class="btn btn-primary m-t-15 waves-effect" id="simpanTimProyek">Simpan</button>
               </form>
             </div>
@@ -893,6 +911,9 @@
                 <th>Nama Proyek</th>
                 <th>PM</th>
                 <th>Member</th>
+                <th>Disiplin</th>
+                <th>Posisi</th>
+                <th>Kategori</th>
                 <th style="width: 150px;" class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -903,6 +924,9 @@
                 <td><%= team_project.project.nama_proyek %></td>
                 <td><%= team_project.pm %></td>
                 <td><%= team_project.user.email %></td>
+                <td><%= team_project.disipline.try(:nama_disiplin) %></td>
+                <td><%= team_project.position.try(:nama_posisi) %></td>
+                <td><%= team_project.tipe_proyek %></td>
                 <td style="width: 150px;" class="text-center">
                   <%# if current_user.can? { |permissions| permissions.category.update? } %>
                   <a href="#" class="btn btn-warning btn-circle btn-sm" id="ubahTimProyek" data-toggle="modal" data-target="#tim-proyek" data-id="<%= team_project.id %>">

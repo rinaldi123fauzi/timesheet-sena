@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_14_041359) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_16_072441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -150,15 +150,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_041359) do
   end
 
   create_table "projects", force: :cascade do |t|
-    t.bigint "position_id", null: false
-    t.bigint "disipline_id", null: false
     t.string "nama_proyek"
-    t.string "tipe_proyek"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "kategori"
-    t.index ["disipline_id"], name: "index_projects_on_disipline_id"
-    t.index ["position_id"], name: "index_projects_on_position_id"
+    t.date "start_date"
+    t.date "end_date"
+    t.string "kode_proyek"
   end
 
   create_table "role_assignments", force: :cascade do |t|
@@ -184,6 +182,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_041359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "pm"
+    t.bigint "disipline_id"
+    t.bigint "position_id"
+    t.string "tipe_proyek"
+    t.index ["disipline_id"], name: "index_team_projects_on_disipline_id"
+    t.index ["position_id"], name: "index_team_projects_on_position_id"
     t.index ["project_id"], name: "index_team_projects_on_project_id"
     t.index ["user_id"], name: "index_team_projects_on_user_id"
   end
@@ -243,10 +246,10 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_041359) do
   add_foreign_key "loans", "inventories"
   add_foreign_key "loans", "users"
   add_foreign_key "positions", "disiplines"
-  add_foreign_key "projects", "disiplines"
-  add_foreign_key "projects", "positions"
   add_foreign_key "role_assignments", "roles"
   add_foreign_key "role_assignments", "users"
+  add_foreign_key "team_projects", "disiplines"
+  add_foreign_key "team_projects", "positions"
   add_foreign_key "team_projects", "projects"
   add_foreign_key "team_projects", "users"
   add_foreign_key "timesheets", "activities"

@@ -131,6 +131,8 @@ Rails.application.routes.draw do
       get 'projects' => 'team_projects#projects'
       get 'users' => 'team_projects#users'
       post 'create' => 'team_projects#create'
+      get 'positions' => 'team_projects#positions'
+      get 'disiplines' => 'team_projects#disiplines'
       put 'update' => 'team_projects#update'
       delete 'delete' => 'team_projects#delete'
     end

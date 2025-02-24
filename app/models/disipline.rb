@@ -15,4 +15,5 @@ class Disipline < ApplicationRecord
   has_many :position
   has_many :project
   has_many :activity
+  has_many :team_project
 end

@@ -1,13 +1,10 @@
 <script>
-  $('#positions').select2();
-  $('#disiplines').select2();
-  $('#kategori').select2();
   $(document).on('click','#simpanProyek',function(e){
     e.preventDefault();
+    var kodeProyek = $('#kode_proyek').val();
     var namaProyek = $('#nama_proyek').val();
-    var posisi = $('#positions').val();
-    var disiplin = $('#disiplines').val();
-    var kategori = $('#kategori').val();
+    var startDate = $('#start-date').val();
+    var endDate = $('#end-date').val();
     var id_proyek = $('#id_proyek').val();
     $('#simpanProyek').text('Loading...');
     if (id_proyek == "") {
@@ -16,10 +13,10 @@
         method: 'POST',
         data : {
           authenticity_token: '<%= form_authenticity_token %>',
+          kode_proyek:kodeProyek,
           nama_proyek:namaProyek,
-          posisi:posisi,
-          kategori:kategori,
-          disiplin:disiplin
+          start_date:startDate,
+          end_date:endDate
         },
         success: function(data)
         {
@@ -34,10 +31,10 @@
         method: 'PUT',
         data : {
           authenticity_token: '<%= form_authenticity_token %>',
+          kode_proyek:kodeProyek,
           nama_proyek:namaProyek,
-          posisi:posisi,
-          disiplin:disiplin,
-          kategori:kategori,
+          start_date:startDate,
+          end_date:endDate,
           id_proyek:id_proyek
         },
         success: function(data)
@@ -57,9 +54,9 @@
     var id = $(this).data('id');
     $('#id_proyek').empty();
     $('#nama_proyek').empty();
-    $('#positions').empty();
-    $('#disiplines').empty();
-    $('#kategori').empty();
+    $('#kode_proyek').empty();
+    $('#start-date').empty();
+    $('#end-date').empty();
     $('.modal-title').text('Ubah Data');
     $.ajax({
       url: "/transaksi/projects/detail",
@@ -70,42 +67,10 @@
       success: function(data)
       {
         $('#id_proyek').val(id);
+        $('#kode_proyek').val(data['data']['kode_proyek']);
         $('#nama_proyek').val(data['data']['nama_proyek']);
-        for (let i = 0; i < data['positions'].length; i++) {
-          const element = data['positions'][i];
-          if (element['id'] == data['data']['position_id']) {
-            $('#positions').append(`
-              <option value="${element['id']}" selected>${element['nama_posisi']}</option>
-            `);
-          }else{
-            $('#positions').append(`
-              <option value="${element['id']}">${element['nama_posisi']}</option>
-            `);
-          }
-        }
-        for (let i = 0; i < data['disiplines'].length; i++) {
-          const element = data['disiplines'][i];
-          if (element['id'] == data['data']['disipline_id']) {
-            $('#disiplines').append(`
-              <option value="${element['id']}" selected>${element['nama_disiplin']}</option>
-            `);
-          }else{
-            $('#disiplines').append(`
-              <option value="${element['id']}">${element['nama_disiplin']}</option>
-            `);
-          }
-        }
-        if (data['data']['kategori'] == "Departemen") {
-          $('#kategori').append(`
-            <option value="Departemen" selected>Departemen</option>
-            <option value="Proyek">Proyek</option>
-          `);
-        }else{
-          $('#kategori').append(`
-            <option value="Departemen">Departemen</option>
-            <option value="Proyek" selected>Proyek</option>
-          `);
-        }
+        $('#start-date').val(data['data']['start_date']);
+        $('#end-date').val(data['data']['end_date']);
       }
     });
   });
@@ -115,46 +80,10 @@
     $('#nama_proyek').val('');
     $('#positions').empty();
     $('#disiplines').empty();
+    $('#start-date').empty();
+    $('#end-date').empty();
     $('#id_proyek').val('');
     $('.modal-title').text('Tambah Data');
-    $.ajax({
-      url: "/transaksi/projects/positions",
-      method: 'GET',
-      data : {
-        authenticity_token: '<%= form_authenticity_token %>',
-        id:id
-      },
-      success: function(data)
-      {
-        for (let i = 0; i < data['data'].length; i++) {
-          const element = data['data'][i];
-          $('#positions').append(`
-            <option value="${element['id']}">${element['nama_posisi']}</option>
-          `);
-        }
-      }
-    });
-    $.ajax({
-      url: "/transaksi/projects/disiplines",
-      method: 'GET',
-      data : {
-        authenticity_token: '<%= form_authenticity_token %>',
-        id:id
-      },
-      success: function(data)
-      {
-        for (let i = 0; i < data['data'].length; i++) {
-          const element = data['data'][i];
-          $('#disiplines').append(`
-            <option value="${element['id']}">${element['nama_disiplin']}</option>
-          `);
-        }
-      }
-    });
-    $('#kategori').append(`
-      <option value="Departemen">Departemen</option>
-      <option value="Proyek">Proyek</option>
-    `);
   });
 
   $(document).on('click','#hapusProyek',function(e){

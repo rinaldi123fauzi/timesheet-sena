@@ -2,11 +2,17 @@
   $('#nama-proyek').select2();
   $('#pm').select2();
   $('#member').select2();
+  $('#disiplin').select2();
+  $('#posisi').select2();
+  $('#tipe-proyek').select2();
   $(document).on('click','#simpanTimProyek',function(e){
     e.preventDefault();
     var namaProyek = $('#nama-proyek').val();
     var pm = $('#pm').val();
     var member = $('#member').val();
+    var disiplin = $('#disiplin').val();
+    var posisi = $('#posisi').val();
+    var tipe_proyek = $('#tipe-proyek').val();
     var id_tim_proyek = $('#id_tim_proyek').val();
     $('#simpanTimProyek').text('Loading...');
     if (id_tim_proyek == "") {
@@ -17,7 +23,10 @@
           authenticity_token: '<%= form_authenticity_token %>',
           proyek:namaProyek,
           pm:pm,
-          member:member
+          member:member,
+          disiplin:disiplin,
+          posisi:posisi,
+          tipe_proyek:tipe_proyek,
         },
         success: function(data)
         {
@@ -35,6 +44,9 @@
           proyek:namaProyek,
           pm:pm,
           member:member,
+          disiplin:disiplin,
+          posisi:posisi,
+          tipe_proyek:tipe_proyek,
           id_tim_proyek:id_tim_proyek
         },
         success: function(data)
@@ -102,6 +114,44 @@
             `);
           }
         }
+
+        for (let i = 0; i < data['disiplines'].length; i++) {
+          const element = data['disiplines'][i];
+          if (element['id'] == data['data']['disipline_id']) {
+            $('#disiplin').append(`
+              <option value="${element['id']}" selected>${element['nama_disiplin']}</option>
+            `);
+          }else{
+            $('#disiplin').append(`
+              <option value="${element['id']}">${element['nama_disiplin']}</option>
+            `);
+          }
+        }
+
+        for (let i = 0; i < data['positions'].length; i++) {
+          const element = data['positions'][i];
+          if (element['id'] == data['data']['position_id']) {
+            $('#posisi').append(`
+              <option value="${element['id']}" selected>${element['nama_posisi']}</option>
+            `);
+          }else{
+            $('#posisi').append(`
+              <option value="${element['id']}">${element['nama_posisi']}</option>
+            `);
+          }
+        }
+
+        if (data['data']['tipe_proyek'] == "Departemen") {
+          $('#tipe-proyek').append(`
+            <option value="Departemen" selected>Departemen</option>
+            <option value="Proyek">Proyek</option>
+          `);
+        }else{
+          $('#tipe-proyek').append(`
+            <option value="Departemen">Departemen</option>
+            <option value="Proyek" selected>Proyek</option>
+          `);
+        }
       }
     });
   });
@@ -153,6 +203,47 @@
         }
       }
     });
+
+    $.ajax({
+      url: "/transaksi/team_projects/disiplines",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#disiplin').append(`
+            <option value="${element['id']}">${element['nama_disiplin']}</option>
+          `);
+        }
+      }
+    });
+
+    $.ajax({
+      url: "/transaksi/team_projects/positions",
+      method: 'GET',
+      data : {
+        authenticity_token: '<%= form_authenticity_token %>',
+        id:id
+      },
+      success: function(data)
+      {
+        for (let i = 0; i < data['data'].length; i++) {
+          const element = data['data'][i];
+          $('#posisi').append(`
+            <option value="${element['id']}">${element['nama_posisi']}</option>
+          `);
+        }
+      }
+    });
+
+    $('#tipe-proyek').append(`
+      <option value="Departemen">Departemen</option>
+      <option value="Proyek">Proyek</option>
+    `);
   });
 
   $(document).on('click','#hapusTimProyek',function(e){

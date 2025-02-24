@@ -495,7 +495,7 @@
             for (let i = 0; i < data['data'].length; i++) {
               const element = data['data'][i];
               $('.proyek').append(`
-                <option value="${element['id']}">${element['nama_proyek']}</option>
+                <option value="${element['id']}">${element['project']['nama_proyek']}</option>
               `);
             }
           }
